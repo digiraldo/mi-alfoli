@@ -78,6 +78,7 @@ export interface PercentageExecution {
 
 export interface BillPayment {
   id: string;
+  userId?: string;
   monthlyBillId: string;
   year: number;
   month: number;
