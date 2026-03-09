@@ -1,0 +1,33 @@
+{
+  "name": "mi-alfoli",
+  "version": "1.0.0",
+  "description": "Mi Alfolí - Gestor de Finanzas Personales con Propósito",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^5.18.0",
+    "@mui/material": "^5.18.0",
+    "@mui/system": "^5.18.0",
+    "@react-oauth/google": "^0.13.4",
+    "@vercel/og": "^0.11.1",
+    "chart.js": "^4.4.8",
+    "date-fns": "^4.1.0",
+    "next": "^16.1.6",
+    "react": "^18.3.1",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "typescript": "^5.8.2"
+  }
+}

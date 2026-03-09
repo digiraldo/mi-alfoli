@@ -1,0 +1,269 @@
+// This is your Prisma schema file for Mi Alfolí
+// Database: PostgreSQL (Supabase)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ── USUARIOS ──────────────────────────────────────────────
+model User {
+  id                      String    @id @default(uuid())
+  email                   String    @unique
+  passwordHash            String?   @map("password_hash")
+  fullName                String    @map("full_name")
+  avatarUrl               String?   @map("avatar_url")
+  googleId                String?   @map("google_id")
+  currencyCode            String    @default("COP") @map("currency_code")
+  appWebUrl               String?   @map("app_web_url")
+  timezone                String    @default("America/Bogota")
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  refreshTokens           RefreshToken[]
+  categories              Category[]
+  accounts                Account[]
+  transactions            Transaction[]
+  percentageRules         PercentageRule[]
+  percentageExecutions    PercentageExecution[]
+  monthlyBills            MonthlyBill[]
+  billPayments            BillPayment[]
+  pushSubscriptions       PushSubscription[]
+  savingsGoals            SavingsGoal[]
+  goalWithdrawals         GoalWithdrawal[]
+
+  @@map("users")
+}
+
+// ── REFRESH TOKENS ────────────────────────────────────────
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("refresh_tokens")
+}
+
+// ── CATEGORÍAS ────────────────────────────────────────────
+model Category {
+  id        String          @id @default(uuid())
+  userId    String?         @map("user_id")
+  user      User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  type      TransactionType
+  icon      String          @default("📋")
+  color     String          @default("#9E9E9E")
+  isDefault Boolean         @default(false) @map("is_default")
+  sortOrder Int             @default(0) @map("sort_order")
+  createdAt DateTime        @default(now()) @map("created_at")
+
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+// ── CUENTAS BANCARIAS ─────────────────────────────────────
+model Account {
+  id             String      @id @default(uuid())
+  userId         String      @map("user_id")
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  type           AccountType
+  color          String      @default("#006064")
+  icon           String      @default("🏦")
+  currentBalance Decimal     @default(0) @map("current_balance") @db.Decimal(15, 2)
+  creditLimit    Decimal?    @map("credit_limit") @db.Decimal(15, 2)
+  lastFour       String?     @map("last_four") @db.VarChar(4)
+  isActive       Boolean     @default(true) @map("is_active")
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  transactions Transaction[]
+
+  @@map("accounts")
+}
+
+// ── TRANSACCIONES ─────────────────────────────────────────
+model Transaction {
+  id               String          @id @default(uuid())
+  userId           String          @map("user_id")
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId        String?         @map("account_id")
+  account          Account?        @relation(fields: [accountId], references: [id])
+  categoryId       String?         @map("category_id")
+  category         Category?       @relation(fields: [categoryId], references: [id])
+  percentageRuleId String?         @map("percentage_rule_id")
+  percentageRule   PercentageRule? @relation(fields: [percentageRuleId], references: [id])
+  type             TransactionType
+  amount           Decimal         @db.Decimal(15, 2)
+  description      String
+  notes            String?
+  date             DateTime        @db.Date
+  isRecurring      Boolean         @default(false) @map("is_recurring")
+  tags             String[]
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  @@map("transactions")
+}
+
+// ── REGLAS DE PORCENTAJE ──────────────────────────────────
+model PercentageRule {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  percentage  Decimal  @db.Decimal(5, 2)
+  color       String   @default("#006064")
+  icon        String   @default("📊")
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  priority    Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  transactions         Transaction[]
+  percentageExecutions PercentageExecution[]
+
+  @@map("percentage_rules")
+}
+
+// ── EJECUCIÓN DE PORCENTAJES ──────────────────────────────
+model PercentageExecution {
+  id               String         @id @default(uuid())
+  userId           String         @map("user_id")
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  percentageRuleId String         @map("percentage_rule_id")
+  percentageRule   PercentageRule @relation(fields: [percentageRuleId], references: [id])
+  year             Int
+  month            Int
+  allocatedAmount  Decimal        @map("allocated_amount") @db.Decimal(15, 2)
+  executedAmount   Decimal        @default(0) @map("executed_amount") @db.Decimal(15, 2)
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  @@unique([percentageRuleId, year, month])
+  @@map("percentage_executions")
+}
+
+// ── CUENTAS MENSUALES ─────────────────────────────────────
+model MonthlyBill {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  provider        String?
+  paymentRef      String?  @map("payment_reference")
+  dueDay          Int      @map("due_day")
+  amount          Decimal  @db.Decimal(15, 2)
+  isVariableAmount Boolean @default(false) @map("is_variable_amount")
+  color           String   @default("#006064")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  payments BillPayment[]
+
+  @@map("monthly_bills")
+}
+
+// ── PAGOS DE CUENTAS MENSUALES ────────────────────────────
+model BillPayment {
+  id            String        @id @default(uuid())
+  userId        String        @map("user_id")
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  monthlyBillId String        @map("monthly_bill_id")
+  monthlyBill   MonthlyBill   @relation(fields: [monthlyBillId], references: [id])
+  year          Int
+  month         Int
+  amountPaid    Decimal       @map("amount_paid") @db.Decimal(15, 2)
+  paidDate      DateTime      @map("paid_date") @db.Date
+  status        PaymentStatus @default(pending)
+  notes         String?
+  createdAt     DateTime      @default(now()) @map("created_at")
+
+  @@map("bill_payments")
+}
+
+// ── ENUMS ─────────────────────────────────────────────────
+enum TransactionType {
+  income
+  expense
+  transfer
+}
+
+enum AccountType {
+  bank
+  credit_card
+  cash
+  digital_wallet
+  investment
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  overdue
+  partial
+}
+
+// ── PUSH SUBSCRIPTIONS ────────────────────────────────────
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("push_subscriptions")
+}
+
+// ── FONDOS Y METAS DE AHORRO ──────────────────────────────
+enum SavingsGoalType {
+  emergency
+  goal
+}
+
+model SavingsGoal {
+  id            String          @id @default(uuid())
+  userId        String          @map("user_id")
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId     String?         @map("account_id")
+  name          String
+  type          SavingsGoalType @default(goal)
+  icon          String          @default("🎯")
+  color         String          @default("#006064")
+  targetAmount  Decimal?        @map("target_amount") @db.Decimal(15, 2)
+  currentAmount Decimal         @default(0) @map("current_amount") @db.Decimal(15, 2)
+  deadline      DateTime?
+  notes         String?
+  isCompleted   Boolean         @default(false) @map("is_completed")
+  isActive      Boolean         @default(true) @map("is_active")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  withdrawals   GoalWithdrawal[]
+
+  @@map("savings_goals")
+}
+
+model GoalWithdrawal {
+  id        String      @id @default(uuid())
+  goalId    String      @map("goal_id")
+  goal      SavingsGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  userId    String      @map("user_id")
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Decimal     @db.Decimal(15, 2)
+  reason    String      // Descripción: "Médico", "Reparación carro", etc.
+  category  String      @default("other") // emergency_category
+  date      DateTime    @default(now())
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  @@map("goal_withdrawals")
+}

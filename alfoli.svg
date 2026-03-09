@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="250" height="250">
+  <defs>
+    <style>
+      .cls-base { fill: #006064; }
+      .cls-domo { fill: #797979; opacity: 0.1; }
+      .cls-linea { stroke: #006064; stroke-width: 2.5; stroke-linecap: round; }
+      .cls-oro  { fill: #FFB300; }
+    </style>
+  </defs>
+
+  <!-- 1. El Alfolí: bóveda protectora + base sólida + línea de tierra -->
+  <path d="M 15 65 A 35 35 0 0 1 85 65 Z" class="cls-domo"/>
+  <path d="M 15 65 A 35 35 0 0 0 85 65 Z" class="cls-base"/>
+  <line x1="8" y1="65" x2="92" y2="65" class="cls-linea"/>
+
+  <!-- 2. Finanzas: gráfico de barras ascendente -->
+  <rect x="29" y="50" width="10" height="15" rx="4" class="cls-base"/>
+  <rect x="45" y="38" width="10" height="27" rx="4" class="cls-base"/>
+  <rect x="61" y="26" width="10" height="39" rx="4" class="cls-base"/>
+
+  <!-- 3. Cosecha bíblica: grano de trigo dorado en la cima de cada barra -->
+  <path d="M 34 38 Q 39 43 34 48 Q 29 43 34 38 Z" class="cls-oro"/>
+  <path d="M 50 26 Q 55 31 50 36 Q 45 31 50 26 Z" class="cls-oro"/>
+  <path d="M 66 14 Q 71 19 66 24 Q 61 19 66 14 Z" class="cls-oro"/>
+
+  <!-- 4. La Bendición de Mal. 3:10: moneda/sol cayendo del cielo -->
+  <circle cx="28" cy="28" r="4" class="cls-oro"/>
+  <path d="M 28 20 L 28 22 M 28 34 L 28 36 M 20 28 L 22 28 M 34 28 L 36 28"
+        stroke="#FFB300" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
