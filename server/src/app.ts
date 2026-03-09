@@ -63,6 +63,10 @@ app.get('/health', (_, res) => {
   });
 });
 
+app.get('/', (_, res) => {
+  res.send('Mi Alfolí API is running. "Traed todos los diezmos al alfolí..." - Malaquías 3:10');
+});
+
 // ── Routes ───────────────────────────────────────────────
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/transactions', transactionRoutes);
