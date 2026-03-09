@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.authRoutes = void 0;
+const express_1 = require("express");
+const auth_controller_1 = require("../controllers/auth.controller");
+const auth_1 = require("../middleware/auth");
+exports.authRoutes = (0, express_1.Router)();
+exports.authRoutes.post('/register', auth_controller_1.register);
+exports.authRoutes.post('/login', auth_controller_1.login);
+exports.authRoutes.post('/google', auth_controller_1.googleLogin);
+exports.authRoutes.post('/refresh-token', auth_controller_1.refreshToken);
+exports.authRoutes.post('/logout', auth_controller_1.logout);
+exports.authRoutes.get('/me', auth_1.authMiddleware, auth_controller_1.me);
+exports.authRoutes.put('/profile', auth_1.authMiddleware, auth_controller_1.updateProfile);
+exports.authRoutes.put('/profile/password', auth_1.authMiddleware, auth_controller_1.changePassword);

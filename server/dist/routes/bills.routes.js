@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.billRoutes = void 0;
+const express_1 = require("express");
+const auth_1 = require("../middleware/auth");
+const bills_controller_1 = require("../controllers/bills.controller");
+exports.billRoutes = (0, express_1.Router)();
+exports.billRoutes.use(auth_1.authMiddleware);
+exports.billRoutes.get('/', bills_controller_1.getBills);
+exports.billRoutes.post('/', bills_controller_1.createBill);
+exports.billRoutes.put('/:id', bills_controller_1.updateBill);
+exports.billRoutes.delete('/:id', bills_controller_1.deleteBill);
+exports.billRoutes.post('/:id/mark-paid', bills_controller_1.markPaid);

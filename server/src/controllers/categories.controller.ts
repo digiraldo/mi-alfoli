@@ -35,7 +35,7 @@ export async function createCategory(req: AuthRequest, res: Response): Promise<v
 
 // ── DELETE /api/categories/:id ────────────────────────────
 export async function deleteCategory(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const existing = await prisma.category.findFirst({ where: { id, userId: req.userId } });
   if (!existing) {
     res.status(404).json({ message: 'Categoría no encontrada' });

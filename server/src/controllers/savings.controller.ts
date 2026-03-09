@@ -80,7 +80,7 @@ export async function createGoal(req: Request, res: Response) {
 export async function updateGoal(req: Request, res: Response) {
   try {
     const userId = (req as any).userId;
-    const { id } = req.params;
+    const id = req.params.id as string;
     const data = goalSchema.partial().parse(req.body);
 
     const goal = await prisma.savingsGoal.findFirst({ where: { id, userId } });
@@ -104,7 +104,7 @@ export async function updateGoal(req: Request, res: Response) {
 // DELETE /api/savings/:id
 export async function deleteGoal(req: Request, res: Response) {
   const userId = (req as any).userId;
-  const { id } = req.params;
+  const id = req.params.id as string;
   const goal = await prisma.savingsGoal.findFirst({ where: { id, userId } });
   if (!goal) return res.status(404).json({ message: 'Fondo no encontrado.' });
   await prisma.savingsGoal.update({ where: { id }, data: { isActive: false } });
@@ -115,7 +115,7 @@ export async function deleteGoal(req: Request, res: Response) {
 export async function depositToGoal(req: Request, res: Response) {
   try {
     const userId = (req as any).userId;
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { amount } = depositSchema.parse(req.body);
 
     const goal = await prisma.savingsGoal.findFirst({ where: { id, userId, isActive: true } });
@@ -138,7 +138,7 @@ export async function depositToGoal(req: Request, res: Response) {
 export async function withdrawFromGoal(req: Request, res: Response) {
   try {
     const userId = (req as any).userId;
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { amount, reason, category, date } = withdrawSchema.parse(req.body);
 
     const goal = await prisma.savingsGoal.findFirst({ where: { id, userId, isActive: true } });
@@ -175,7 +175,7 @@ export async function withdrawFromGoal(req: Request, res: Response) {
 // GET /api/savings/:id/withdrawals
 export async function getWithdrawals(req: Request, res: Response) {
   const userId = (req as any).userId;
-  const { id } = req.params;
+  const id = req.params.id as string;
 
   const goal = await prisma.savingsGoal.findFirst({ where: { id, userId } });
   if (!goal) return res.status(404).json({ message: 'Fondo no encontrado.' });

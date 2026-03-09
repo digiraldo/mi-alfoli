@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.percentageRoutes = void 0;
+const express_1 = require("express");
+const auth_1 = require("../middleware/auth");
+const percentages_controller_1 = require("../controllers/percentages.controller");
+exports.percentageRoutes = (0, express_1.Router)();
+exports.percentageRoutes.use(auth_1.authMiddleware);
+exports.percentageRoutes.get('/', percentages_controller_1.getRules);
+exports.percentageRoutes.post('/', percentages_controller_1.createRule);
+exports.percentageRoutes.put('/:id', percentages_controller_1.updateRule);
+exports.percentageRoutes.delete('/:id', percentages_controller_1.deleteRule);
+exports.percentageRoutes.get('/execution', percentages_controller_1.getExecution);

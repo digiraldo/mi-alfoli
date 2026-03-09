@@ -51,7 +51,7 @@ export async function createRule(req: AuthRequest, res: Response): Promise<void>
 
 // ── PUT /api/percentages/:id ──────────────────────────────
 export async function updateRule(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const existing = await prisma.percentageRule.findFirst({ where: { id, userId: req.userId } });
   if (!existing) {
     res.status(404).json({ message: 'Regla no encontrada' });
@@ -85,7 +85,7 @@ export async function updateRule(req: AuthRequest, res: Response): Promise<void>
 
 // ── DELETE /api/percentages/:id ───────────────────────────
 export async function deleteRule(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const existing = await prisma.percentageRule.findFirst({ where: { id, userId: req.userId } });
   if (!existing) {
     res.status(404).json({ message: 'Regla no encontrada' });

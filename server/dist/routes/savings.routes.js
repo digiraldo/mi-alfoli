@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.savingsRoutes = void 0;
+const express_1 = require("express");
+const savings_controller_1 = require("../controllers/savings.controller");
+const auth_1 = require("../middleware/auth");
+exports.savingsRoutes = (0, express_1.Router)();
+exports.savingsRoutes.get('/', auth_1.authMiddleware, savings_controller_1.getGoals);
+exports.savingsRoutes.post('/', auth_1.authMiddleware, savings_controller_1.createGoal);
+exports.savingsRoutes.put('/:id', auth_1.authMiddleware, savings_controller_1.updateGoal);
+exports.savingsRoutes.delete('/:id', auth_1.authMiddleware, savings_controller_1.deleteGoal);
+exports.savingsRoutes.post('/:id/deposit', auth_1.authMiddleware, savings_controller_1.depositToGoal);
+exports.savingsRoutes.post('/:id/withdraw', auth_1.authMiddleware, savings_controller_1.withdrawFromGoal);
+exports.savingsRoutes.get('/:id/withdrawals', auth_1.authMiddleware, savings_controller_1.getWithdrawals);

@@ -72,7 +72,7 @@ export async function createTransaction(req: AuthRequest, res: Response): Promis
 
 // ── PUT /api/transactions/:id ─────────────────────────────
 export async function updateTransaction(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
 
   const existing = await prisma.transaction.findFirst({
     where: { id, userId: req.userId },
@@ -104,7 +104,7 @@ export async function updateTransaction(req: AuthRequest, res: Response): Promis
 
 // ── DELETE /api/transactions/:id ──────────────────────────
 export async function deleteTransaction(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
 
   const existing = await prisma.transaction.findFirst({
     where: { id, userId: req.userId },

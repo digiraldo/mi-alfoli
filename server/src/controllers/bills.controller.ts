@@ -39,7 +39,7 @@ export async function createBill(req: AuthRequest, res: Response): Promise<void>
 
 // ── PUT /api/bills/:id ────────────────────────────────────
 export async function updateBill(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const existing = await prisma.monthlyBill.findFirst({ where: { id, userId: req.userId } });
   if (!existing) {
     res.status(404).json({ message: 'Cuenta no encontrada' });
@@ -58,7 +58,7 @@ export async function updateBill(req: AuthRequest, res: Response): Promise<void>
 
 // ── DELETE /api/bills/:id ─────────────────────────────────
 export async function deleteBill(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const existing = await prisma.monthlyBill.findFirst({ where: { id, userId: req.userId } });
   if (!existing) {
     res.status(404).json({ message: 'Cuenta no encontrada' });
@@ -70,7 +70,7 @@ export async function deleteBill(req: AuthRequest, res: Response): Promise<void>
 
 // ── POST /api/bills/:id/mark-paid ─────────────────────────
 export async function markPaid(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const { year, month, amountPaid, notes } = req.body;
 
   const bill = await prisma.monthlyBill.findFirst({ where: { id, userId: req.userId } });

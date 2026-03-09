@@ -38,7 +38,7 @@ export async function createAccount(req: AuthRequest, res: Response): Promise<vo
 
 // ── PUT /api/accounts/:id ─────────────────────────────────
 export async function updateAccount(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const existing = await prisma.account.findFirst({ where: { id, userId: req.userId } });
   if (!existing) {
     res.status(404).json({ message: 'Cuenta no encontrada' });
@@ -55,7 +55,7 @@ export async function updateAccount(req: AuthRequest, res: Response): Promise<vo
 
 // ── DELETE /api/accounts/:id ──────────────────────────────
 export async function deleteAccount(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const existing = await prisma.account.findFirst({ where: { id, userId: req.userId } });
   if (!existing) {
     res.status(404).json({ message: 'Cuenta no encontrada' });
@@ -68,7 +68,7 @@ export async function deleteAccount(req: AuthRequest, res: Response): Promise<vo
 
 // ── PATCH /api/accounts/:id/balance ───────────────────────
 export async function updateBalance(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const { amount } = req.body;
   if (typeof amount !== 'number') {
     res.status(400).json({ message: 'Monto inválido' });
@@ -86,7 +86,7 @@ export async function updateBalance(req: AuthRequest, res: Response): Promise<vo
 // ── GET /api/accounts/:id/stats ───────────────────────────
 // Retorna las transacciones agrupadas por mes para esta cuenta
 export async function getAccountStats(req: AuthRequest, res: Response): Promise<void> {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const existing = await prisma.account.findFirst({ where: { id, userId: req.userId } });
   if (!existing) {
     res.status(404).json({ message: 'Cuenta no encontrada' });

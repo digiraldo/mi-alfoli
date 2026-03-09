@@ -1,0 +1,25 @@
+
+> mi-alfoli-server@1.0.0 build
+> tsc
+
+src/controllers/auth.controller.ts(145,7): error TS2739: Type '{ id: string; email: string; fullName: string; avatarUrl: string | null; currencyCode: string; appWebUrl: string | null; timezone: string; createdAt: Date; }' is missing the following properties from type '{ id: string; email: string; passwordHash: string | null; fullName: string; avatarUrl: string | null; googleId: string | null; currencyCode: string; appWebUrl: string | null; timezone: string; createdAt: Date; updatedAt: Date; }': passwordHash, googleId, updatedAt
+src/controllers/auth.controller.ts(152,58): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(157,17): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(163,19): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(163,35): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(163,57): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(163,86): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(163,115): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(163,141): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(163,168): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(163,195): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(242,9): error TS2739: Type '{ id: string; email: string; fullName: string; avatarUrl: string | null; currencyCode: string; appWebUrl: string | null; timezone: string; createdAt: Date; }' is missing the following properties from type '{ id: string; email: string; passwordHash: string | null; fullName: string; avatarUrl: string | null; googleId: string | null; currencyCode: string; appWebUrl: string | null; timezone: string; createdAt: Date; updatedAt: Date; }': passwordHash, googleId, updatedAt
+src/controllers/auth.controller.ts(253,35): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(256,19): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(256,35): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(256,57): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(256,86): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(256,115): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(256,141): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(256,168): error TS18047: 'user' is possibly 'null'.
+src/controllers/auth.controller.ts(256,195): error TS18047: 'user' is possibly 'null'.

@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.accountRoutes = void 0;
+const express_1 = require("express");
+const auth_1 = require("../middleware/auth");
+const accounts_controller_1 = require("../controllers/accounts.controller");
+exports.accountRoutes = (0, express_1.Router)();
+exports.accountRoutes.use(auth_1.authMiddleware);
+exports.accountRoutes.get('/', accounts_controller_1.getAccounts);
+exports.accountRoutes.post('/', accounts_controller_1.createAccount);
+exports.accountRoutes.put('/:id', accounts_controller_1.updateAccount);
+exports.accountRoutes.delete('/:id', accounts_controller_1.deleteAccount);
+exports.accountRoutes.patch('/:id/balance', accounts_controller_1.updateBalance);
+exports.accountRoutes.get('/:id/stats', accounts_controller_1.getAccountStats);

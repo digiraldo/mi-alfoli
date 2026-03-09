@@ -145,22 +145,21 @@ export async function login(req: Request, res: Response): Promise<void> {
       user = await prisma.user.update({
         where: { id: user.id },
         data: { timezone },
-        select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, createdAt: true },
       });
     }
 
-    const { accessToken, refreshToken } = generateTokens(user.id);
+    const { accessToken, refreshToken } = generateTokens(user!.id);
 
     await prisma.refreshToken.create({
       data: {
         token: refreshToken,
-        userId: user.id,
+        userId: user!.id,
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       },
     });
 
     res.json({
-      user: { id: user.id, email: user.email, fullName: user.fullName, currencyCode: user.currencyCode, timezone: user.timezone, avatarUrl: user.avatarUrl, appWebUrl: user.appWebUrl, createdAt: user.createdAt },
+      user: { id: user!.id, email: user!.email, fullName: user!.fullName, currencyCode: user!.currencyCode, timezone: user!.timezone, avatarUrl: user!.avatarUrl, appWebUrl: user!.appWebUrl, createdAt: user!.createdAt },
       accessToken,
       refreshToken,
     });
@@ -245,15 +244,14 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
             ...(shouldUpdateTimezone && { timezone: userTimezone }),
             ...(shouldUpdateAvatar && { avatarUrl: picture }),
           },
-          select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, createdAt: true },
         });
       }
     }
 
-    const tokens = generateTokens(user.id);
+    const tokens = generateTokens(user!.id);
 
     res.json({
-      user: { id: user.id, email: user.email, fullName: user.fullName, currencyCode: user.currencyCode, timezone: user.timezone, avatarUrl: user.avatarUrl, appWebUrl: user.appWebUrl, createdAt: user.createdAt },
+      user: { id: user!.id, email: user!.email, fullName: user!.fullName, currencyCode: user!.currencyCode, timezone: user!.timezone, avatarUrl: user!.avatarUrl, appWebUrl: user!.appWebUrl, createdAt: user!.createdAt },
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
     });
