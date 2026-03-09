@@ -5,12 +5,20 @@ import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
-// Configurar VAPID keys
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
-  process.env.VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
+// Configurar VAPID keys (solo si existen, para evitar caídas en producción)
+if (process.env.VAPID_EMAIL && process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  try {
+    webpush.setVapidDetails(
+      process.env.VAPID_EMAIL,
+      process.env.VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+  } catch (err) {
+    console.warn('⚠️ Error configurando VAPID keys:', err);
+  }
+} else {
+  console.warn('⚠️ Variables VAPID no encontradas. Las notificaciones Push estarán deshabilitadas.');
+}
 
 const subscribeSchema = z.object({
   endpoint: z.string().url(),
