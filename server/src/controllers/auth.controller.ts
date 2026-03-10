@@ -163,8 +163,9 @@ export async function login(req: Request, res: Response): Promise<void> {
       accessToken,
       refreshToken,
     });
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor' });
+  } catch (error: any) {
+    console.error('🔥 Error crítico en Login:', error);
+    res.status(500).json({ message: 'Error interno del servidor', detail: error.message, stack: error.stack });
   }
 }
 
