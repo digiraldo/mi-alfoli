@@ -85,6 +85,20 @@ app.use('/api/savings', savingsRoutes);
 // ── Start Background Jobs ─────────────────────────────────
 startBillReminderCron();
 
+import { prisma } from './lib/prisma';
+app.get('/api/debug', async (req, res) => {
+  try {
+    const memory = process.memoryUsage();
+    // Ping to database
+    const start = Date.now();
+    await prisma.$queryRaw`SELECT 1`;
+    const latency = Date.now() - start;
+    res.json({ status: 'Database OK', latency_ms: latency, memory: { rss_mb: Math.random(memory.rss / 1024 / 1024), heap_mb: Math.round(memory.heapUsed / 1024 / 1024) }, env: { PORT: process.env.PORT, DATABASE_URL: Boolean(process.env.DATABASE_URL) } });
+  } catch (err: any) {
+    res.status(500).json({ status: 'Database Failed', error: err.message, stack: err.stack, code: err.code });
+  }
+});
+
 // ── 404 Handler ──────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({ message: `Ruta ${req.path} no encontrada` });
