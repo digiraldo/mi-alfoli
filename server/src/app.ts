@@ -21,17 +21,24 @@ app.use(helmet({
 }));
 app.use(cors({
   origin: (origin, callback) => {
-    // Permitir: sin origen (apps nativas/Postman), localhost, o red local (192.168.x.x / 10.x / 172.x)
+    // Permitir: sin origen (apps nativas/Postman), localhost, o red local
     if (!origin) return callback(null, true);
-    const allowed = [
-      process.env.FRONTEND_URL || 'http://localhost:3000',
-      'http://localhost:3000',
-    ];
-    const isLocalNetwork = /^http:\/\/(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(origin);
-    if (allowed.includes(origin) || isLocalNetwork) {
+    
+    // Obtener la URL del frontend limpiando barras finales por seguridad
+    const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/$/, '');
+    
+    // Validar si el Origin coincide exactamente con la URL configurada
+    if (origin === frontendUrl || origin === 'http://localhost:3000') {
       return callback(null, true);
     }
-    return callback(new Error(`CORS bloqueado: ${origin}`));
+    
+    // Validar redes locales (para pruebas en el móvil)
+    const isLocalNetwork = /^http:\/\/(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(origin);
+    if (isLocalNetwork) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error(`CORS bloqueado para el origin: ${origin}`));
   },
   credentials: true,
 }));
