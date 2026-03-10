@@ -26,3 +26,36 @@
     ÔÇö Malaqu├¡as 3:10 (RVR1960)
 ­ƒî¥ ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
 
+[INFO] 02:02:13 Restarting: C:\laragon\www\mi-alfoli\server\src\controllers\auth.controller.ts has been modified
+[Cron] Ô£à Recordatorio de gastos fijos programado (8:00 AM diario).
+
+­ƒî¥ ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+    Mi Alfol├¡ ÔÇö API REST corriendo
+    Local:   http://localhost:4001
+    Network: http://192.168.68.114:4001
+    Health:  http://localhost:4001/health
+    "Traed todos los diezmos al alfol├¡..."
+    ÔÇö Malaqu├¡as 3:10 (RVR1960)
+­ƒî¥ ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+
+[INFO] 02:06:33 Restarting: C:\laragon\www\mi-alfoli\server\src\app.ts has been modified
+Error: Cannot find module 'dayjs'
+Require stack:
+- C:\laragon\www\mi-alfoli\server\src\jobs\percentageRollover.job.ts
+- C:\laragon\www\mi-alfoli\server\src\app.ts
+- C:\laragon\www\mi-alfoli\server\src\server.ts
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1249:15)
+    at Function._load (node:internal/modules/cjs/loader:1075:27)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:219:24)
+    at Module.require (node:internal/modules/cjs/loader:1340:12)
+    at require (node:internal/modules/helpers:138:16)
+    at Object.<anonymous> (C:\laragon\www\mi-alfoli\server\src\jobs\percentageRollover.job.ts:4:1)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1565:14)
+    at Module._compile (C:\laragon\www\mi-alfoli\server\node_modules\source-map-support\source-map-support.js:568:25)
+    at Module.m._compile (C:\Users\disan\AppData\Local\Temp\ts-node-dev-hook-8194782594456536.js:69:33)
+[ERROR] 02:06:33 Error: Cannot find module 'dayjs'
+Require stack:
+- C:\laragon\www\mi-alfoli\server\src\jobs\percentageRollover.job.ts
+- C:\laragon\www\mi-alfoli\server\src\app.ts
+- C:\laragon\www\mi-alfoli\server\src\server.ts
