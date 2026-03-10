@@ -93,7 +93,7 @@ app.get('/api/debug', async (req, res) => {
     const start = Date.now();
     await prisma.$queryRaw`SELECT 1`;
     const latency = Date.now() - start;
-    res.json({ status: 'Database OK', latency_ms: latency, memory: { rss_mb: Math.random(memory.rss / 1024 / 1024), heap_mb: Math.round(memory.heapUsed / 1024 / 1024) }, env: { PORT: process.env.PORT, DATABASE_URL: Boolean(process.env.DATABASE_URL) } });
+    res.json({ status: 'Database OK', latency_ms: latency, memory: { rss_mb: Math.round(memory.rss / 1024 / 1024), heap_mb: Math.round(memory.heapUsed / 1024 / 1024) }, env: { PORT: process.env.PORT, DATABASE_URL: Boolean(process.env.DATABASE_URL) } });
   } catch (err: any) {
     res.status(500).json({ status: 'Database Failed', error: err.message, stack: err.stack, code: err.code });
   }
