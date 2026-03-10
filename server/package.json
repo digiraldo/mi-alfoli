@@ -11,7 +11,7 @@
     "prisma:studio": "npx prisma studio",
     "prisma:seed": "ts-node-dev --transpile-only prisma/seed.ts",
     "prisma:generate": "npx prisma generate",
-    "heroku-postbuild": "npm run prisma:generate && npm run build"
+    "heroku-postbuild": "npm install --production=false && npm run prisma:generate && npm run build"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
