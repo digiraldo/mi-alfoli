@@ -20,27 +20,12 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 const corsMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const origin = req.headers.origin;
-  
-  // Lista de origenes siempre permitidos:
-  const isVercel = origin && origin.includes('mi-alfoli');
-  const isLocal = origin && (origin === 'http://localhost:3000' || origin.includes('192.168.') || origin.includes('10.'));
-  const isFrontendEnv = origin === (process.env.FRONTEND_URL || '').replace(/\/$/, '');
-
-  if (isVercel || isLocal || isFrontendEnv || !origin) {
-    if (origin) {
-      res.setHeader('Access-Control-Allow-Origin', origin);
-    } else {
-      res.setHeader('Access-Control-Allow-Origin', '*'); // Fallback para Postman y crons sin origin
-    }
-  }
-
+  // Configuración de emergencia "Abierta" (Wildcard) para evitar bloqueos de Koyeb
+  res.setHeader('Access-Control-Allow-Origin', '*'); 
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Max-Age', '86400'); // Cachear preflight por 24 horas y reducir latencia
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Max-Age', '86400');
 
-  // Interceptar Preflights Options para que nunca toquen el enrutador
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
