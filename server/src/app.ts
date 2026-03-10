@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -88,8 +89,13 @@ app.use((req, res) => {
 
 // ── Error Handler ─────────────────────────────────────────
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error('[Error]', err.message);
-  res.status(500).json({ message: 'Error interno del servidor', error: process.env.NODE_ENV === 'development' ? err.message : undefined });
+  console.error('[Global Error - Crash Prevented]', err.message);
+  if (err.stack) console.error(err.stack);
+  
+  res.status(500).json({ 
+    message: 'Error interno o de conexión a la base de datos', 
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Unhandled timeout / db error' 
+  });
 });
 
 export default app;
