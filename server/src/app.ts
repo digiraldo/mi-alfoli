@@ -19,34 +19,37 @@ app.use(helmet({
   crossOriginResourcePolicy: false,
   crossOriginEmbedderPolicy: false,
 }));
-app.use(cors({
-  origin: (origin, callback) => {
-    // Permitir: sin origen (apps nativas/Postman), localhost, o red local
-    if (!origin) return callback(null, true);
-    
-    // Obtener la URL del frontend limpiando barras finales por seguridad
-    const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/$/, '');
-    
-    // Validar si el Origin coincide exactamente con la URL configurada
-    if (origin === frontendUrl || origin === 'http://localhost:3000' || origin.includes('mi-alfoli')) {
-      return callback(null, true);
-    }
-    
-    // Validar redes locales (para pruebas en el móvil)
-    const isLocalNetwork = /^http:\/\/(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(origin);
-    if (isLocalNetwork) {
-      return callback(null, true);
-    }
-    
-    return callback(new Error(`CORS bloqueado para el origin: ${origin}`));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-}));
+const corsMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const origin = req.headers.origin;
+  
+  // Lista de origenes siempre permitidos:
+  const isVercel = origin && origin.includes('mi-alfoli');
+  const isLocal = origin && (origin === 'http://localhost:3000' || origin.includes('192.168.') || origin.includes('10.'));
+  const isFrontendEnv = origin === (process.env.FRONTEND_URL || '').replace(/\/$/, '');
 
-// Preflight universal explícito para prevenir Timeout en Koyeb
-app.options('*', cors());
+  if (isVercel || isLocal || isFrontendEnv || !origin) {
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+      res.setHeader('Access-Control-Allow-Origin', '*'); // Fallback para Postman y crons sin origin
+    }
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Max-Age', '86400'); // Cachear preflight por 24 horas y reducir latencia
+
+  // Interceptar Preflights Options para que nunca toquen el enrutador
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  next();
+};
+
+app.use(corsMiddleware);
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
