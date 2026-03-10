@@ -23,6 +23,7 @@ const goalSchema = zod_1.z.object({
 });
 const depositSchema = zod_1.z.object({
     amount: zod_1.z.number().positive(),
+    accountId: zod_1.z.string().uuid('Debe seleccionar una cuenta válida'),
     notes: zod_1.z.string().optional(),
 });
 const withdrawSchema = zod_1.z.object({
@@ -113,16 +114,30 @@ async function depositToGoal(req, res) {
     try {
         const userId = req.userId;
         const id = req.params.id;
-        const { amount } = depositSchema.parse(req.body);
+        const { amount, accountId } = depositSchema.parse(req.body);
         const goal = await prisma.savingsGoal.findFirst({ where: { id, userId, isActive: true } });
         if (!goal)
             return res.status(404).json({ message: 'Fondo no encontrado.' });
-        const newAmount = Number(goal.currentAmount) + amount;
-        const isCompleted = goal.targetAmount ? newAmount >= Number(goal.targetAmount) : false;
-        const updated = await prisma.savingsGoal.update({
-            where: { id },
-            data: { currentAmount: newAmount, isCompleted },
-        });
+        // Verificar si la cuenta origen existe y tiene fondos
+        const account = await prisma.account.findFirst({ where: { id: accountId, userId, isActive: true } });
+        if (!account)
+            return res.status(404).json({ message: 'Cuenta de origen no encontrada.' });
+        if (Number(account.currentBalance) < amount) {
+            return res.status(400).json({ message: 'Saldo insuficiente en la cuenta seleccionada.' });
+        }
+        const newGoalAmount = Number(goal.currentAmount) + amount;
+        const newAccountBalance = Number(account.currentBalance) - amount;
+        const isCompleted = goal.targetAmount ? newGoalAmount >= Number(goal.targetAmount) : false;
+        const [updated] = await prisma.$transaction([
+            prisma.savingsGoal.update({
+                where: { id },
+                data: { currentAmount: newGoalAmount, isCompleted },
+            }),
+            prisma.account.update({
+                where: { id: accountId },
+                data: { currentBalance: newAccountBalance },
+            }),
+        ]);
         res.json(updated);
     }
     catch (err) {
@@ -142,6 +157,7 @@ async function withdrawFromGoal(req, res) {
             return res.status(400).json({ message: 'Monto insuficiente en el fondo.' });
         }
         const newAmount = Number(goal.currentAmount) - amount;
+        const transactionDate = date ? new Date(date) : new Date();
         const [updatedGoal, withdrawal] = await prisma.$transaction([
             prisma.savingsGoal.update({
                 where: { id },
@@ -154,9 +170,19 @@ async function withdrawFromGoal(req, res) {
                     amount,
                     reason,
                     category,
-                    date: date ? new Date(date) : new Date(),
+                    date: transactionDate,
                 },
             }),
+            prisma.transaction.create({
+                data: {
+                    userId,
+                    type: 'expense',
+                    amount,
+                    description: `Retiro de Fondo/Meta: ${reason}`,
+                    date: transactionDate,
+                    linkedGoalId: id,
+                }
+            })
         ]);
         res.json({ goal: updatedGoal, withdrawal });
     }

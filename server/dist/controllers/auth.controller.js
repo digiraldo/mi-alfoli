@@ -154,7 +154,8 @@ async function login(req, res) {
         });
     }
     catch (error) {
-        res.status(500).json({ message: 'Error interno del servidor' });
+        console.error('🔥 Error crítico en Login:', error);
+        res.status(500).json({ message: 'Error interno del servidor', detail: error.message, stack: error.stack });
     }
 }
 // ── POST /api/auth/google ──────────────────────────────────

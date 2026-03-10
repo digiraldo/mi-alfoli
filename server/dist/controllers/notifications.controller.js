@@ -11,8 +11,21 @@ const web_push_1 = __importDefault(require("web-push"));
 const client_1 = require("@prisma/client");
 const zod_1 = require("zod");
 const prisma = new client_1.PrismaClient();
-// Configurar VAPID keys
-web_push_1.default.setVapidDetails(process.env.VAPID_EMAIL, process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
+// Configurar VAPID keys (solo si existen, para evitar caídas en producción)
+if (process.env.VAPID_EMAIL && process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    try {
+        const vapidEmail = process.env.VAPID_EMAIL.startsWith('mailto:')
+            ? process.env.VAPID_EMAIL
+            : 'mailto:' + process.env.VAPID_EMAIL;
+        web_push_1.default.setVapidDetails(vapidEmail, process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
+    }
+    catch (err) {
+        console.warn('⚠️ Error configurando VAPID keys:', err);
+    }
+}
+else {
+    console.warn('⚠️ Variables VAPID no encontradas. Las notificaciones Push estarán deshabilitadas.');
+}
 const subscribeSchema = zod_1.z.object({
     endpoint: zod_1.z.string().url(),
     keys: zod_1.z.object({

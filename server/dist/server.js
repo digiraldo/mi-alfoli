@@ -5,12 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
 const app_1 = __importDefault(require("./app"));
-const prisma_1 = require("./lib/prisma");
-const PORT = parseInt(process.env.PORT || '4000');
+const PORT = process.env.NODE_ENV === 'production' ? 8000 : parseInt(process.env.PORT || '4000');
 async function main() {
     try {
-        await prisma_1.prisma.$connect();
-        console.log('✅ Conectado a PostgreSQL (Supabase)');
+        // Prisma Connect is lazy, we shouldn't block the HTTP server from binding the port immediately 
+        // especially for PaaS platforms like Koyeb/Render which expect instant port binding for Health Checks.
         app_1.default.listen(PORT, '0.0.0.0', () => {
             const ip = require('os').networkInterfaces();
             const localIp = Object.values(ip).flat().find((i) => i?.family === 'IPv4' && !i?.internal)?.address || 'localhost';

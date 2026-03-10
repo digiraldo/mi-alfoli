@@ -75,6 +75,8 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     const payload = {
       ...data,
       amount: Number(data.amount),
+      categoryId: data.categoryId || undefined,
+      accountId: data.accountId || undefined,
       percentageRuleId: data.percentageRuleId || undefined,
       date: typeof data.date === 'string' ? data.date : new Date(data.date).toISOString().slice(0, 10),
     };
@@ -86,6 +88,8 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     const payload = {
       ...data,
       amount: data.amount !== undefined ? Number(data.amount) : undefined,
+      categoryId: data.categoryId === '' ? null : data.categoryId,
+      accountId: data.accountId === '' ? null : data.accountId,
       percentageRuleId: data.percentageRuleId === '' ? null : data.percentageRuleId,
       date: data.date ? (typeof data.date === 'string' ? data.date : new Date(data.date).toISOString().slice(0, 10)) : undefined,
     };

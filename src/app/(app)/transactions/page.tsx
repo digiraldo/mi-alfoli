@@ -262,7 +262,12 @@ export default function TransactionsPage() {
             <ToggleButtonGroup
               value={form.type}
               exclusive
-              onChange={(_, val) => val && setForm({ ...form, type: val, categoryId: val === 'income' ? 'cat-001' : 'cat-020' })}
+              onChange={(_, val) => {
+                if (val) {
+                  const defaultCat = categories.find((c) => c.type === val)?.id || '';
+                  setForm({ ...form, type: val, categoryId: defaultCat, percentageRuleId: '' });
+                }
+              }}
               fullWidth
             >
               <ToggleButton value="income" sx={{ fontWeight: 700, color: '#4CAF50' }}>
