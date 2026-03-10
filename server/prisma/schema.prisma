@@ -101,6 +101,8 @@ model Transaction {
   category         Category?       @relation(fields: [categoryId], references: [id])
   percentageRuleId String?         @map("percentage_rule_id")
   percentageRule   PercentageRule? @relation(fields: [percentageRuleId], references: [id])
+  linkedGoalId     String?         @map("linked_goal_id")
+  linkedGoal       SavingsGoal?    @relation("SavingsGoalTransactions", fields: [linkedGoalId], references: [id])
   type             TransactionType
   amount           Decimal         @db.Decimal(15, 2)
   description      String
@@ -249,6 +251,7 @@ model SavingsGoal {
   updatedAt     DateTime        @updatedAt @map("updated_at")
 
   withdrawals   GoalWithdrawal[]
+  linkedTransactions Transaction[] @relation("SavingsGoalTransactions")
 
   @@map("savings_goals")
 }

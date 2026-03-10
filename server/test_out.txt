@@ -1,0 +1,13 @@
+PrismaClientInitializationError: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Error querying the database: FATAL: Tenant or user not found
+    at ei.handleRequestError (C:\laragon\www\mi-alfoli\server\node_modules\@prisma\client\runtime\library.js:121:7568)
+    at ei.handleAndLogRequestError (C:\laragon\www\mi-alfoli\server\node_modules\@prisma\client\runtime\library.js:121:6593)
+    at ei.request (C:\laragon\www\mi-alfoli\server\node_modules\@prisma\client\runtime\library.js:121:6300)
+    at async a (C:\laragon\www\mi-alfoli\server\node_modules\@prisma\client\runtime\library.js:130:9551) {
+  clientVersion: '6.19.2',
+  errorCode: undefined,
+  retryable: undefined
+}

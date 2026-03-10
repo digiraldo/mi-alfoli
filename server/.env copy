@@ -1,0 +1,13 @@
+# --- COPIA Y PEGA ESTOS VALORES EN KOYEB (Sin comillas) en Environment variables and files ---
+
+DATABASE_URL=postgresql://postgres.cldamwejtvuovnjsxpwo:Semeolvid0%4026@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=5
+DIRECT_URL=postgresql://postgres.cldamwejtvuovnjsxpwo:Semeolvid0%4026@aws-1-us-east-1.pooler.supabase.com:5432/postgres
+FRONTEND_URL=https://mi-alfoli-a4bj.vercel.app
+GOOGLE_CLIENT_ID=362539958066-88ofb58h9b0eb20977eivp0uobp2u2g1.apps.googleusercontent.com
+JWT_REFRESH_SECRET=super_refresh_secret_jwt_key_for_mi_alfoli_456
+JWT_SECRET=super_secret_jwt_key_for_mi_alfoli_123
+NODE_ENV=production
+PORT=4000
+VAPID_EMAIL=support@mialfoli.com
+VAPID_PRIVATE_KEY=X8H0y89B7Y_Q6gP-zX_cEwkVZ_a5QWq2s0_8_jXg36r
+VAPID_PUBLIC_KEY=BOMlF1jJtt52H1xH8z8cR6qIWeQ9A8uI_Q6gP-zX_cEwkVZ_a5QWq2s0_8_jXg36rY4zO_6o5eCq00y7sK4YQ1E

@@ -20,6 +20,7 @@ const goalSchema = z.object({
 
 const depositSchema = z.object({
   amount: z.number().positive(),
+  accountId: z.string().uuid('Debe seleccionar una cuenta válida'),
   notes: z.string().optional(),
 });
 
@@ -116,18 +117,32 @@ export async function depositToGoal(req: Request, res: Response) {
   try {
     const userId = (req as any).userId;
     const id = req.params.id as string;
-    const { amount } = depositSchema.parse(req.body);
+    const { amount, accountId } = depositSchema.parse(req.body);
 
     const goal = await prisma.savingsGoal.findFirst({ where: { id, userId, isActive: true } });
     if (!goal) return res.status(404).json({ message: 'Fondo no encontrado.' });
 
-    const newAmount = Number(goal.currentAmount) + amount;
-    const isCompleted = goal.targetAmount ? newAmount >= Number(goal.targetAmount) : false;
+    // Verificar si la cuenta origen existe y tiene fondos
+    const account = await prisma.account.findFirst({ where: { id: accountId, userId, isActive: true } });
+    if (!account) return res.status(404).json({ message: 'Cuenta de origen no encontrada.' });
+    if (Number(account.currentBalance) < amount) {
+       return res.status(400).json({ message: 'Saldo insuficiente en la cuenta seleccionada.' });
+    }
 
-    const updated = await prisma.savingsGoal.update({
-      where: { id },
-      data: { currentAmount: newAmount, isCompleted },
-    });
+    const newGoalAmount = Number(goal.currentAmount) + amount;
+    const newAccountBalance = Number(account.currentBalance) - amount;
+    const isCompleted = goal.targetAmount ? newGoalAmount >= Number(goal.targetAmount) : false;
+
+    const [updated] = await prisma.$transaction([
+      prisma.savingsGoal.update({
+        where: { id },
+        data: { currentAmount: newGoalAmount, isCompleted },
+      }),
+      prisma.account.update({
+        where: { id: accountId },
+        data: { currentBalance: newAccountBalance },
+      }),
+    ]);
     res.json(updated);
   } catch (err: any) {
     res.status(400).json({ message: err.message });
@@ -149,6 +164,8 @@ export async function withdrawFromGoal(req: Request, res: Response) {
     }
 
     const newAmount = Number(goal.currentAmount) - amount;
+    const transactionDate = date ? new Date(date) : new Date();
+
     const [updatedGoal, withdrawal] = await prisma.$transaction([
       prisma.savingsGoal.update({
         where: { id },
@@ -161,9 +178,19 @@ export async function withdrawFromGoal(req: Request, res: Response) {
           amount,
           reason,
           category,
-          date: date ? new Date(date) : new Date(),
+          date: transactionDate,
         },
       }),
+      prisma.transaction.create({
+        data: {
+          userId,
+          type: 'expense',
+          amount,
+          description: `Retiro de Fondo/Meta: ${reason}`,
+          date: transactionDate,
+          linkedGoalId: id,
+        }
+      })
     ]);
 
     res.json({ goal: updatedGoal, withdrawal });

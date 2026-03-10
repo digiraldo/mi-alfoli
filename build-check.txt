@@ -1,0 +1,23 @@
+
+> mi-alfoli@1.0.0 build
+> next build
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 10.7s
+  Running TypeScript ...
+Failed to compile.
+
+./src/store/useBillStore.ts:32:7
+Type error: Object literal may only specify known properties, and 'userId' does not exist in type 'BillPayment'.
+
+  30 |     payments: (b.payments ?? []).map((p: any): BillPayment => ({
+  31 |       id: p.id,
+> 32 |       userId: p.userId,
+     |       ^
+  33 |       monthlyBillId: b.id,
+  34 |       year: p.year,
+  35 |       month: p.month,
+Next.js build worker exited with code: 1 and signal: null

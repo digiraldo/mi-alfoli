@@ -11,7 +11,7 @@ export function MiAlfoliLogo({ size = 48, ...props }: { size?: number } & SvgIco
   // Usar colores light como base para SSR (evita Hydration mismatch)
   const isDark = mounted ? theme.palette.mode === 'dark' : false;
 
-  const domeOpacityColor = isDark ? '#BDBDBD' : '#9E9E9E';
+  const domeOpacityColor = isDark ? '#e5e4e4ff' : '#404040ff';
   const domeColor = isDark ? '#008388' : '#006064';
   const grainColor = isDark ? '#fdcf43' : '#FFB300';
 

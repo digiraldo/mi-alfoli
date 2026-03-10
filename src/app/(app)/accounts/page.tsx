@@ -13,6 +13,7 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import SavingsIcon from '@mui/icons-material/Savings';
 import { useAccountStore } from '@/store/useAccountStore';
+import { useSavingsStore } from '@/store/useSavingsStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatCurrency } from '@/utils/format';
 import { Account } from '@/types';
@@ -33,6 +34,7 @@ const PRESET_COLORS = [
 export default function AccountsPage() {
   const theme = useTheme();
   const { accounts, fetchAccounts, addAccount, updateAccount, deleteAccount } = useAccountStore();
+  const { goals, fetchGoals } = useSavingsStore();
   const { user } = useAuthStore();
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -43,7 +45,7 @@ export default function AccountsPage() {
   const [balance, setBalance] = useState('');
   const [lastFour, setLastFour] = useState('');
 
-  useEffect(() => { fetchAccounts(); }, []);
+  useEffect(() => { fetchAccounts(); fetchGoals(); }, []);
 
   const handleOpenEdit = (acc?: Account) => {
     if (acc) {
@@ -136,6 +138,15 @@ export default function AccountsPage() {
           const isCredit = acc.type === 'credit_card';
           // Si el usuario ingresó un lastFour, se usa ese. Si no, se genera uno visual derivado del ID
           const displayLastFour = acc.lastFour || acc.id.replace(/\D/g, '').slice(-4).padStart(4, '0');
+
+          // Cálculos de Envelope Budgeting (Retención)
+          const retainedBalance = goals
+            .filter((g) => g.accountId === acc.id && g.isActive)
+            .reduce((sum, g) => sum + g.currentAmount, 0);
+
+          const availableBalance = acc.type === 'credit_card' 
+            ? acc.currentBalance // No retenemos en deudas de TDC
+            : Math.max(0, acc.currentBalance - retainedBalance);
 
           return (
             <Grid item xs={12} sm={6} md={4} key={acc.id}>
@@ -279,22 +290,20 @@ export default function AccountsPage() {
                     </Typography>
                   </Box>
 
-                  {/* ── NÚMERO ENMASCARADO ── */}
-                  <Typography sx={{
-                    color: 'rgba(255,255,255,0.9)',
-                    fontSize: 'clamp(0.82rem, 2vw, 1rem)',
-                    letterSpacing: '0.15em',
-                    fontFamily: '"Courier New", monospace',
-                    fontWeight: 600,
-                    textShadow: '0 1px 3px rgba(0,0,0,0.35)',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                  }}>
-                    •••• &nbsp;•••• &nbsp;•••• &nbsp;{displayLastFour}
-                  </Typography>
+                  {/* ── FILA INTERMEDIA: Retenciones Envelope Budgeting ── */}
+                  {!isCredit && retainedBalance > 0 && (
+                     <Box sx={{ mt: 'auto', mb: '8px' }}>
+                       <Typography sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase' }}>
+                         Retenido en Metas 🔒
+                       </Typography>
+                       <Typography sx={{ color: '#fff', fontSize: '0.85rem', fontWeight: 700, opacity: 0.9 }}>
+                         {formatCurrency(retainedBalance, user?.currencyCode)}
+                       </Typography>
+                     </Box>
+                  )}
 
-                  {/* ── FILA INFERIOR: saldo + logo de red ── */}
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '4%' }}>
+                  {/* ── FILA INFERIOR: saldo libre + logo de red ── */}
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '4%', mt: retainedBalance > 0 ? 0 : 'auto' }}>
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Typography sx={{
                         color: 'rgba(255,255,255,0.65)',
@@ -304,7 +313,7 @@ export default function AccountsPage() {
                         letterSpacing: '0.08em',
                         lineHeight: 1,
                       }}>
-                        {isCredit ? 'Saldo deuda' : 'Saldo disponible'}
+                        {isCredit ? 'Saldo deuda' : 'Saldo Disponible Libre'}
                       </Typography>
                       <Typography sx={{
                         color: isCredit && acc.currentBalance > 0 ? '#ffcdd2' : '#fff',
@@ -316,7 +325,7 @@ export default function AccountsPage() {
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                       }}>
-                        {formatCurrency(acc.currentBalance, user?.currencyCode)}
+                        {formatCurrency(availableBalance, user?.currencyCode)}
                       </Typography>
                     </Box>
 

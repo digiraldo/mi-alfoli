@@ -10,7 +10,7 @@ interface SavingsState {
   createGoal: (data: Partial<SavingsGoal>) => Promise<void>;
   updateGoal: (id: string, data: Partial<SavingsGoal>) => Promise<void>;
   deleteGoal: (id: string) => Promise<void>;
-  deposit: (id: string, amount: number, notes?: string) => Promise<void>;
+  deposit: (id: string, amount: number, accountId: string, notes?: string) => Promise<void>;
   withdraw: (id: string, amount: number, reason: string, category: string) => Promise<SavingsGoal | void>;
   getWithdrawals: (id: string) => Promise<GoalWithdrawal[]>;
 }
@@ -51,8 +51,8 @@ export const useSavingsStore = create<SavingsState>((set) => ({
     set((s) => ({ goals: s.goals.filter((g) => g.id !== id) }));
   },
 
-  deposit: async (id, amount, notes) => {
-    const goal = await api.post<SavingsGoal>(`/api/savings/${id}/deposit`, { amount, notes });
+  deposit: async (id, amount, accountId, notes) => {
+    const goal = await api.post<SavingsGoal>(`/api/savings/${id}/deposit`, { amount, accountId, notes });
     set((s) => ({ goals: s.goals.map((g) => (g.id === id ? goal : g)) }));
   },
 

@@ -24,6 +24,7 @@ function mapApiTransaction(tx: any): Transaction {
     notes: tx.notes,
     categoryId: tx.categoryId ?? '',
     accountId: tx.accountId,
+    percentageRuleId: tx.percentageRuleId,
     date: typeof tx.date === 'string' ? tx.date.slice(0, 10) : tx.date,
     tags: tx.tags ?? [],
     isRecurring: tx.isRecurring ?? false,
@@ -74,6 +75,7 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     const payload = {
       ...data,
       amount: Number(data.amount),
+      percentageRuleId: data.percentageRuleId || undefined,
       date: typeof data.date === 'string' ? data.date : new Date(data.date).toISOString().slice(0, 10),
     };
     const res = await api.post<{ transaction: any }>('/api/transactions', payload);
@@ -84,6 +86,7 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     const payload = {
       ...data,
       amount: data.amount !== undefined ? Number(data.amount) : undefined,
+      percentageRuleId: data.percentageRuleId === '' ? null : data.percentageRuleId,
       date: data.date ? (typeof data.date === 'string' ? data.date : new Date(data.date).toISOString().slice(0, 10)) : undefined,
     };
     const res = await api.put<{ transaction: any }>(`/api/transactions/${id}`, payload);

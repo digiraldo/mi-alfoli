@@ -62,6 +62,7 @@ export default function SavingsPage() {
     accountId: '', deadline: '', notes: '',
   });
   const [depositAmount, setDepositAmount] = useState('');
+  const [depositAccountId, setDepositAccountId] = useState('');
   const [withdrawForm, setWithdrawForm] = useState({ amount: '', reason: '', category: 'other' });
 
   useEffect(() => { fetchGoals(); fetchAccounts(); }, []);
@@ -120,10 +121,11 @@ export default function SavingsPage() {
   };
 
   const handleDeposit = async () => {
-    if (!depositDialog || !depositAmount) return;
-    await deposit(depositDialog.id, parseFloat(depositAmount));
+    if (!depositDialog || !depositAmount || !depositAccountId) return;
+    await deposit(depositDialog.id, parseFloat(depositAmount), depositAccountId);
     setDepositDialog(null);
     setDepositAmount('');
+    setDepositAccountId('');
   };
 
   const handleWithdraw = async () => {
@@ -426,20 +428,39 @@ export default function SavingsPage() {
       <Dialog open={!!depositDialog} onClose={() => setDepositDialog(null)} maxWidth="xs" fullWidth>
         <DialogTitle fontWeight={700}>💰 Depositar en {depositDialog?.name}</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Monto a depositar"
-            type="number"
-            fullWidth
-            autoFocus
-            value={depositAmount}
-            onChange={(e) => setDepositAmount(e.target.value)}
-            InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
-            sx={{ mt: 1 }}
-          />
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            <TextField
+              label="Monto a depositar"
+              type="number"
+              fullWidth
+              autoFocus
+              value={depositAmount}
+              onChange={(e) => setDepositAmount(e.target.value)}
+              InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+            />
+            <FormControl fullWidth>
+              <InputLabel>Cuenta de Origen (Requerida)</InputLabel>
+              <Select
+                value={depositAccountId}
+                onChange={(e) => setDepositAccountId(e.target.value)}
+                label="Cuenta de Origen (Requerida)"
+              >
+                {accounts.map((acc) => (
+                  <MenuItem key={acc.id} value={acc.id} disabled={acc.currentBalance <= 0}>
+                     {acc.icon} {acc.name} - {formatCurrency(acc.currentBalance, user?.currencyCode)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3 }}>
           <Button onClick={() => setDepositDialog(null)}>Cancelar</Button>
-          <Button variant="contained" onClick={handleDeposit} disabled={!depositAmount || parseFloat(depositAmount) <= 0}>
+          <Button 
+            variant="contained" 
+            onClick={handleDeposit} 
+            disabled={!depositAmount || parseFloat(depositAmount) <= 0 || !depositAccountId}
+          >
             Depositar
           </Button>
         </DialogActions>

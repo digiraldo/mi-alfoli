@@ -82,26 +82,40 @@ export async function markPaid(req: AuthRequest, res: Response): Promise<void> {
   const y = year ?? new Date().getFullYear();
   const m = month ?? new Date().getMonth() + 1;
 
-  const payment = await prisma.billPayment.upsert({
-    where: { id: `${id}-${y}-${m}` },
-    create: {
-      id: `${id}-${y}-${m}`,
-      monthlyBillId: id,
-      userId: req.userId!,
-      year: y,
-      month: m,
-      amountPaid: amountPaid ?? Number(bill.amount),
-      paidDate: new Date(),
-      status: 'paid',
-      notes,
-    },
-    update: {
-      amountPaid: amountPaid ?? Number(bill.amount),
-      paidDate: new Date(),
-      status: 'paid',
-      notes,
-    },
-  });
+  const finalAmount = amountPaid ?? Number(bill.amount);
+  const paymentId = `${id}-${y}-${m}`;
+
+  const [payment] = await prisma.$transaction([
+    prisma.billPayment.upsert({
+      where: { id: paymentId },
+      create: {
+        id: paymentId,
+        monthlyBillId: id,
+        userId: req.userId!,
+        year: y,
+        month: m,
+        amountPaid: finalAmount,
+        paidDate: new Date(),
+        status: 'paid',
+        notes,
+      },
+      update: {
+        amountPaid: finalAmount,
+        paidDate: new Date(),
+        status: 'paid',
+        notes,
+      },
+    }),
+    prisma.transaction.create({
+      data: {
+        userId: req.userId!,
+        type: 'expense',
+        amount: finalAmount,
+        description: `Pago de Cuenta Mensual: ${bill.name}`,
+        date: new Date(),
+      }
+    })
+  ]);
 
   res.json({ payment, message: 'Cuenta marcada como pagada ✓' });
 }

@@ -15,6 +15,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { useTransactionStore } from '@/store/useTransactionStore';
 import { useAccountStore } from '@/store/useAccountStore';
+import { usePercentageStore } from '@/store/usePercentageStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatCurrency } from '@/utils/format';
 import { Transaction } from '@/types';
@@ -27,6 +28,7 @@ const EMPTY_TX: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'> =
   description: '',
   categoryId: '', // Empezará vacío, lo llenaremos dinámicamente al abrir el modal
   accountId: '', // Por defecto no hay cuenta seleccionada
+  percentageRuleId: '', 
   date: new Date().toISOString().split('T')[0],
 };
 
@@ -34,6 +36,7 @@ export default function TransactionsPage() {
   const theme = useTheme();
   const { transactions, categories, addTransaction, updateTransaction, deleteTransaction } = useTransactionStore();
   const { accounts, fetchAccounts } = useAccountStore();
+  const { rules, fetchRules } = usePercentageStore();
   const { user } = useAuthStore();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -45,9 +48,11 @@ export default function TransactionsPage() {
 
   const getCat = (id: string) => categories.find((c) => c.id === id);
   const getAcc = (id?: string) => accounts.find((a) => a.id === id);
+  const getRule = (id?: string) => rules.find((r) => r.id === id);
 
   React.useEffect(() => {
     fetchAccounts();
+    fetchRules();
   }, []);
 
   const filtered = useMemo(() => {
@@ -77,7 +82,7 @@ export default function TransactionsPage() {
 
   const openEdit = (tx: Transaction) => {
     setEditing(tx);
-    setForm({ type: tx.type, amount: tx.amount, description: tx.description, categoryId: tx.categoryId, accountId: tx.accountId || '', date: tx.date });
+    setForm({ type: tx.type, amount: tx.amount, description: tx.description, categoryId: tx.categoryId, accountId: tx.accountId || '', percentageRuleId: tx.percentageRuleId || '', date: tx.date });
     setDialogOpen(true);
   };
 
@@ -205,6 +210,13 @@ export default function TransactionsPage() {
                                 sx={{ fontSize: '0.6rem', height: 16, borderColor: getAcc(tx.accountId)?.color }}
                               />
                             )}
+                            {tx.percentageRuleId && (
+                              <Chip
+                                label={getRule(tx.percentageRuleId)?.name ?? 'Regla'}
+                                size="small"
+                                sx={{ fontSize: '0.6rem', height: 16, bgcolor: alpha(getRule(tx.percentageRuleId)?.color || '#006064', 0.15), color: getRule(tx.percentageRuleId)?.color }}
+                              />
+                            )}
                           </Stack>
                         }
                       />
@@ -311,6 +323,23 @@ export default function TransactionsPage() {
                 ))}
               </Select>
             </FormControl>
+            {form.type === 'expense' && (
+              <FormControl fullWidth>
+                <InputLabel>Regla de Porcentaje (Opcional)</InputLabel>
+                <Select
+                  value={form.percentageRuleId || ''}
+                  onChange={(e) => setForm({ ...form, percentageRuleId: e.target.value })}
+                  label="Regla de Porcentaje (Opcional)"
+                >
+                  <MenuItem value=""><em>Ninguna (Gasto Libre)</em></MenuItem>
+                  {rules.filter((r) => r.isActive).map((r) => (
+                    <MenuItem key={r.id} value={r.id}>
+                      {r.icon} {r.name} ({r.percentage}%)
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
             <TextField
               label="Fecha"
               type="date"
