@@ -2,7 +2,7 @@ import 'dotenv/config';
 import app from './app';
 import { prisma } from './lib/prisma';
 
-const PORT = parseInt(process.env.PORT || '8000');
+const PORT = process.env.NODE_ENV === 'production' ? 8000 : parseInt(process.env.PORT || '4000');
 
 async function main() {
   try {
