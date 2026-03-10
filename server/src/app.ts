@@ -11,6 +11,7 @@ import { billRoutes } from './routes/bills.routes';
 import { accountRoutes } from './routes/accounts.routes';
 import { notificationRoutes } from './routes/notifications.routes';
 import { startBillReminderCron } from './jobs/billReminder.job';
+import { startPercentageRolloverCron } from './jobs/percentageRollover.job';
 import { savingsRoutes } from './routes/savings.routes';
 
 const app = express();
@@ -85,6 +86,7 @@ app.use('/api/savings', savingsRoutes);
 
 // ── Start Background Jobs ─────────────────────────────────
 startBillReminderCron();
+startPercentageRolloverCron();
 
 import { prisma } from './lib/prisma';
 app.get('/api/debug', async (req, res) => {

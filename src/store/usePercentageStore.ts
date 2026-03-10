@@ -56,6 +56,8 @@ export const usePercentageStore = create<PercentageState>()((set, get) => ({
         month: e.month,
         allocatedAmount: Number(e.allocatedAmount),
         executedAmount: Number(e.executedAmount),
+        carriedOverAmount: Number(e.carriedOverAmount || 0),
+        isClosed: e.isClosed,
         createdAt: e.createdAt,
       }));
       set({ executions: execs });

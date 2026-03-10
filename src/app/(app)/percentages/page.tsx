@@ -153,7 +153,9 @@ export default function PercentagesPage() {
       <Grid container spacing={2.5}>
         {rules.map((rule) => {
           const exec = getExecution(rule.id);
-          const allocated = exec?.allocatedAmount ?? (totalIncome * rule.percentage / 100);
+          const baseAllocated = exec?.allocatedAmount ?? (totalIncome * rule.percentage / 100);
+          const carriedOver = exec?.carriedOverAmount ?? 0;
+          const allocated = baseAllocated + carriedOver;
           const executed = exec?.executedAmount ?? 0;
           const pct = allocated > 0 ? Math.min(Math.round((executed / allocated) * 100), 100) : 0;
           const surplus = allocated - executed;
@@ -205,7 +207,14 @@ export default function PercentagesPage() {
                     />
                     <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
                       <Typography variant="caption" color="text.secondary">Ejecutado: {formatCurrency(executed, user?.currencyCode)}</Typography>
-                      <Typography variant="caption" color="text.secondary">Asignado: {formatCurrency(allocated, user?.currencyCode)}</Typography>
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">Asignado: {formatCurrency(allocated, user?.currencyCode)}</Typography>
+                        {carriedOver > 0 && (
+                          <Typography variant="caption" color="success.main" display="block">
+                            (Incluye a favor: {formatCurrency(carriedOver, user?.currencyCode)})
+                          </Typography>
+                        )}
+                      </Box>
                     </Box>
 
                     {surplus > 0 && (

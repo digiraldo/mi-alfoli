@@ -148,6 +148,8 @@ model PercentageExecution {
   month            Int
   allocatedAmount  Decimal        @map("allocated_amount") @db.Decimal(15, 2)
   executedAmount   Decimal        @default(0) @map("executed_amount") @db.Decimal(15, 2)
+  carriedOverAmount Decimal       @default(0) @map("carried_over_amount") @db.Decimal(15, 2)
+  isClosed         Boolean        @default(false) @map("is_closed")
   createdAt        DateTime       @default(now()) @map("created_at")
 
   @@unique([percentageRuleId, year, month])

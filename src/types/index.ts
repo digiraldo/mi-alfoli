@@ -74,6 +74,8 @@ export interface PercentageExecution {
   month: number;
   allocatedAmount: number;
   executedAmount: number;
+  carriedOverAmount?: number;
+  isClosed?: boolean;
   createdAt?: string;
 }
 
