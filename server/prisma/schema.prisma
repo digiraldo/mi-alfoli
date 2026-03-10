@@ -22,6 +22,7 @@ model User {
   currencyCode            String    @default("COP") @map("currency_code")
   appWebUrl               String?   @map("app_web_url")
   timezone                String    @default("America/Bogota")
+  billingCycleDay         Int       @default(1) @map("billing_cycle_day")
   createdAt               DateTime  @default(now()) @map("created_at")
   updatedAt               DateTime  @updatedAt @map("updated_at")
 

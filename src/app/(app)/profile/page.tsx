@@ -38,6 +38,7 @@ export default function ProfilePage() {
     currencyCode: user?.currencyCode || 'COP',
     appWebUrl: user?.appWebUrl || '',
     avatarUrl: user?.avatarUrl || '',
+    billingCycleDay: user?.billingCycleDay || 1,
   });
 
   // Password State
@@ -57,6 +58,7 @@ export default function ProfilePage() {
         currencyCode: user.currencyCode,
         appWebUrl: user.appWebUrl || '',
         avatarUrl: user.avatarUrl || '',
+        billingCycleDay: user.billingCycleDay || 1,
       });
     }
   }, [user]);
@@ -107,6 +109,7 @@ export default function ProfilePage() {
         currencyCode: profileForm.currencyCode,
         appWebUrl: profileForm.appWebUrl,
         avatarUrl: profileForm.avatarUrl,
+        billingCycleDay: profileForm.billingCycleDay,
       });
       setMessage({ type: 'success', text: 'Perfil actualizado correctamente.' });
     } catch (error: any) {
@@ -232,6 +235,21 @@ export default function ProfilePage() {
                 {CURRENCIES.map((c) => (
                   <MenuItem key={c.code} value={c.code}>
                     {c.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel>Día de Corte Mensual (Porcentajes)</InputLabel>
+              <Select
+                value={profileForm.billingCycleDay}
+                label="Día de Corte Mensual (Porcentajes)"
+                onChange={(e) => setProfileForm({ ...profileForm, billingCycleDay: Number(e.target.value) })}
+              >
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                  <MenuItem key={day} value={day}>
+                    {day === 31 ? '31 (Fin de mes)' : `Día ${day}`}
                   </MenuItem>
                 ))}
               </Select>

@@ -11,7 +11,7 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: (credential: string) => Promise<void>;
   register: (email: string, password: string, fullName: string) => Promise<void>;
-  updateProfile: (data: { fullName?: string; email?: string; avatarUrl?: string; currencyCode?: string; appWebUrl?: string }) => Promise<void>;
+  updateProfile: (data: { fullName?: string; email?: string; avatarUrl?: string; currencyCode?: string; appWebUrl?: string; billingCycleDay?: number }) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;

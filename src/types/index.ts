@@ -6,6 +6,7 @@ export interface User {
   currencyCode: string;
   appWebUrl?: string; // URL de la app web
   timezone?: string; // Zona horaria del usuario
+  billingCycleDay: number;
   createdAt: string;
 }
 

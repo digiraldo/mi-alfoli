@@ -31,6 +31,7 @@ const updateProfileSchema = z.object({
   currencyCode: z.string().length(3).optional(),
   appWebUrl: z.string().url('URL inválida').or(z.literal('')).optional(),
   timezone: z.string().optional(),
+  billingCycleDay: z.number().int().min(1).max(31).optional(),
 });
 
 const changePasswordSchema = z.object({
@@ -101,7 +102,7 @@ export async function register(req: Request, res: Response): Promise<void> {
         create: DEFAULT_CATEGORIES.map((c) => ({ ...c, isDefault: true })),
       },
     },
-    select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, createdAt: true },
+    select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, billingCycleDay: true, createdAt: true },
   });
 
   const { accessToken, refreshToken } = generateTokens(user.id);
@@ -159,7 +160,7 @@ export async function login(req: Request, res: Response): Promise<void> {
     });
 
     res.json({
-      user: { id: user!.id, email: user!.email, fullName: user!.fullName, currencyCode: user!.currencyCode, timezone: user!.timezone, avatarUrl: user!.avatarUrl, appWebUrl: user!.appWebUrl, createdAt: user!.createdAt },
+      user: { id: user!.id, email: user!.email, fullName: user!.fullName, currencyCode: user!.currencyCode, timezone: user!.timezone, avatarUrl: user!.avatarUrl, appWebUrl: user!.appWebUrl, billingCycleDay: user!.billingCycleDay, createdAt: user!.createdAt },
       accessToken,
       refreshToken,
     });
@@ -252,7 +253,7 @@ export async function googleLogin(req: Request, res: Response): Promise<void> {
     const tokens = generateTokens(user!.id);
 
     res.json({
-      user: { id: user!.id, email: user!.email, fullName: user!.fullName, currencyCode: user!.currencyCode, timezone: user!.timezone, avatarUrl: user!.avatarUrl, appWebUrl: user!.appWebUrl, createdAt: user!.createdAt },
+      user: { id: user!.id, email: user!.email, fullName: user!.fullName, currencyCode: user!.currencyCode, timezone: user!.timezone, avatarUrl: user!.avatarUrl, appWebUrl: user!.appWebUrl, billingCycleDay: user!.billingCycleDay, createdAt: user!.createdAt },
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
     });
@@ -309,7 +310,7 @@ export async function logout(req: Request, res: Response): Promise<void> {
 export async function me(req: Request & { userId?: string }, res: Response): Promise<void> {
   const user = await prisma.user.findUnique({
     where: { id: req.userId },
-    select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, createdAt: true },
+    select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, billingCycleDay: true, createdAt: true },
   });
   if (!user) {
     res.status(404).json({ message: 'Usuario no encontrado' });
@@ -334,7 +335,7 @@ export async function updateProfile(req: Request & { userId?: string }, res: Res
     const updatedUser = await prisma.user.update({
       where: { id: req.userId },
       data: dataToUpdate,
-      select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, createdAt: true },
+      select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, billingCycleDay: true, createdAt: true },
     });
     res.json({ user: updatedUser, message: 'Perfil actualizado' });
   } catch (error: any) {
