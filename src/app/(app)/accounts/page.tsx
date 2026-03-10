@@ -255,25 +255,29 @@ export default function AccountsPage() {
                   </Box>
 
                   {/* ── CHIP EMV + NFC ── */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, my: 'auto' }}>
                     {/* Chip dorado con cuadrícula 3×3 */}
                     <Box sx={{
-                      width: 'clamp(36px, 7%, 46px)',
-                      aspectRatio: '1.4',
-                      background: 'linear-gradient(135deg, #f9e87a 0%, #c68000 40%, #f9e87a 70%, #aa6f00 100%)',
-                      borderRadius: '4px',
-                      border: '1px solid rgba(180,130,0,0.7)',
-                      boxShadow: '0 1px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,230,100,0.5)',
+                      width: 'clamp(38px, 8%, 48px)',
+                      aspectRatio: '1.35',
+                      background: 'linear-gradient(135deg, #FFD54F 0%, #F57F17 40%, #FFB300 70%, #F9A825 100%)',
+                      borderRadius: '5px',
+                      border: '1px solid rgba(255,193,7,0.8)',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,255,255,0.6)',
                       display: 'grid',
                       gridTemplateRows: '1fr 1fr 1fr',
-                      gridTemplateColumns: '1fr 1fr 1fr',
+                      gridTemplateColumns: '1fr 1.2fr 1fr', /* Centro más ancho */
                       gap: '1.5px',
                       p: '3px',
+                      alignItems: 'center',
+                      justifyItems: 'center'
                     }}>
                       {[...Array(9)].map((_, i) => (
                         <Box key={i} sx={{
-                          bgcolor: i === 4 ? 'rgba(150,90,0,0.7)' : 'rgba(150,90,0,0.3)',
-                          borderRadius: '1px',
+                          width: '100%',
+                          height: '100%',
+                          bgcolor: i === 4 ? 'rgba(230,81,0,0.6)' : 'rgba(230,81,0,0.2)',
+                          borderRadius: '1.5px',
                         }} />
                       ))}
                     </Box>
