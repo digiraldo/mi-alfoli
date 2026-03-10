@@ -877,24 +877,25 @@ socket.on('sync-transactions', (data) => {
   - [x] Retiros con clasificación (Salud, Reparación, Desempleo, etc.)
   - [x] Historial completo de retiros por fondo
 
-### Fase 2.5 - Integración de Fondos en el resto de la app (PENDIENTE):
+### Fase 2.5 - Zero-Based Envelope Budgeting Integrado ✅ Completada:
+- [x] **Arquitectura de Retención de Fondos (Sobres)**:
+  - Al depositar fondos en Metas o Emergencias, se vincula y descuenta el saldo del Gran Total Disponible (`currentBalance`) de la Cuenta Bancaria elegida mediante cálculos en caliente.
+  - La Interfaz de Cuentas visualiza el "Saldo Retenido en Metas 🔒" y entrega un "Saldo Disponible Libre" blindado.
+- [x] **Transacciones Automatizadas desde Ahorros**:
+  - Al retirar del fondo de emergencias/metas, el backend usa `$transaction` de Prisma para auto-generar un Egreso maestro (`Transaction`) etiquetado a la meta original, mermando el Flujo Neto reportado en las estadísticas.
+- [x] **Transacciones Automatizadas desde Cuentas Fijas (Bills)**:
+  - La función `markPaid` de una Cuenta Mensual no solo marca el "Upsert"; ahora emite silenciosa y simultáneamente un Egreso en el Gran Libro, absorbiendo su peso del Flujo de Caja total del usuario.
+- [x] **Ejecución de Porcentajes en los Egresos (Thermostats)**:
+  - Los Egresos (`expenses`) ahora solicitan opcionalmente la inclusión de una Regla de Porcentaje (`percentageRuleId`).
+  - Cada Transacción de "Gasto" puede amarrarse al 10% Diezmo o 50% Necesidades Fijas, nutriendo de regreso los gráficos de barras de su ejecución.
 - [ ] **Dashboard**: Mostrar widget resumen de fondos activos
   - Monto total acumulado en todos los fondos
   - Progreso del fondo de emergencias destacado
-  - Alerta si el fondo de emergencias está por debajo del mínimo recomendado (3 meses de gastos)
 - [ ] **Estadísticas**: Nueva pestaña/sección de Fondos y Metas
   - Gráfico de progreso histórico mensual por fondo
-  - Comparativa visual: meta vs acumulado
-  - Resumen de retiros del fondo de emergencias (qué categorías se usaron más)
   - Proyección de fecha de cumplimiento según ritmo de depósitos
-  - Gráfico tipo "Donut" de distribución de fondos activos
 - [ ] **Notificaciones Push**: Nuevas alertas relacionadas con fondos
-  - Alerta cuando una meta alcanza el 100%
-  - Recordatorio mensual si no se ha depositado en un fondo
-  - Alerta si el fondo de emergencias cae por debajo del umbral mínimo
-- [ ] **Transacciones**: Asociar un depósito/retiro de fondo como transacción
-  - Al depositar a un fondo vinculado a una cuenta, generar automáticamente una transacción de tipo Transferencia en esa cuenta
-  - Al retirar del fondo de emergencias, generar una transacción de tipo Gasto con la categoría seleccionada
+  - Alerta cuando una meta alcanza o cae debajo del umbral recomendado
 
 ### Fase 3 - Advanced (4-6 semanas):
 - [ ] Grupos compartidos / Gastos en viajes
