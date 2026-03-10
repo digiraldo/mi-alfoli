@@ -14,6 +14,7 @@ import { startBillReminderCron } from './jobs/billReminder.job';
 import { savingsRoutes } from './routes/savings.routes';
 
 const app = express();
+app.set('trust proxy', 1);
 
 // ── CORTE CORTO ABSOLUTO PARA OPTIONS (PREFLIGHT) ────────
 app.use((req, res, next) => {

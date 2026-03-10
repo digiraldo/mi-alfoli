@@ -8,8 +8,12 @@ const prisma = new PrismaClient();
 // Configurar VAPID keys (solo si existen, para evitar caídas en producción)
 if (process.env.VAPID_EMAIL && process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
   try {
+    const vapidEmail = process.env.VAPID_EMAIL.startsWith('mailto:') 
+      ? process.env.VAPID_EMAIL 
+      : 'mailto:' + process.env.VAPID_EMAIL;
+      
     webpush.setVapidDetails(
-      process.env.VAPID_EMAIL,
+      vapidEmail,
       process.env.VAPID_PUBLIC_KEY,
       process.env.VAPID_PRIVATE_KEY
     );
