@@ -15,27 +15,30 @@ import { savingsRoutes } from './routes/savings.routes';
 
 const app = express();
 
+// ── CORTE CORTO ABSOLUTO PARA OPTIONS (PREFLIGHT) ────────
+app.use((req, res, next) => {
+  // Siempre y en absoluto responder a todo lo que entre antes de que otro middleware lo intercepte
+  res.setHeader('Access-Control-Allow-Origin', '*'); 
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Max-Age', '86400');
+  
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  next();
+});
+
 // ── Security Middleware ──────────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: false,
   crossOriginEmbedderPolicy: false,
 }));
-const corsMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  // Configuración de emergencia "Abierta" (Wildcard) para evitar bloqueos de Koyeb
-  res.setHeader('Access-Control-Allow-Origin', '*'); 
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', '*');
-  res.setHeader('Access-Control-Max-Age', '86400');
 
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-
-  next();
-};
-
-app.use(corsMiddleware);
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true })); 
+// ── Headers CORS ya controlados por el middleware absoluto arriba ────────
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
