@@ -152,6 +152,38 @@ Las tarjetas del [dash](https://mi-alfoli-a4bj.vercel.app/dashboard), se deben d
 
 
 
+npx tsx scripts/seedAndres.ts
+
+git add server/scripts/seedAndres.ts && git commit -m "fix: restaura 20 categorias defecto en entorno de pruebas de Andres" && git push origin main
+
+
+
+
+- Tengo una duda y Tú como accesor y diseñador profesional, ayudame a lo siguiente, ya que recuerdo que necesito trabajar de la siguiente manera:
+- Las tarjetas creadas en mis cuentas es donde va a estar el dinero. Porque esto?, ya que cuando realice un egreso de inversion para un cdt, etf ,cryptos, etc, el dinero tiene que salir de mi cuenta a la cuenta del broker o aplicacion de inversion.
+- De acuerdo a lo anterior quiero que la suma del saldo de  las tarjetas dentro de Mis Cuentas, sea el total que tengo, que cuando haga un ingreso y no seleccione ninguna cuenta o tarjeta, me haga una tarjeta predeterminada de Ingresos.
+- Es logico lo que te explico? entiendes el concepto
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Integración Financiera Integral (Envelope Budgeting + Bills + Porcentajes)
 El objetivo de esta integración es profesionalizar todo el ecosistema contable de "Mi Alfolí". Cada módulo no operará como una isla independiente, sino que tributará hacia una Contabilidad Central (Transacciones) garantizando que el "Saldo Disponible" refleje tu capacidad de gasto real.
 

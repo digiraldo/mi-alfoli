@@ -111,3 +111,27 @@ export async function getAccountStats(req: AuthRequest, res: Response): Promise<
 
   res.json({ account: existing, totalIncome, totalExpense, transactions });
 }
+
+// ── PATCH /api/accounts/:id/default ───────────────────────
+export async function setDefaultAccount(req: AuthRequest, res: Response): Promise<void> {
+  const id = req.params.id as string;
+  const existing = await prisma.account.findFirst({ where: { id, userId: req.userId } });
+  if (!existing) {
+    res.status(404).json({ message: 'Cuenta no encontrada' });
+    return;
+  }
+  
+  // Transacción segura: Apaga TODAS las anteriores y enciende exclusivamente la seleccionada.
+  await prisma.$transaction([
+    prisma.account.updateMany({
+      where: { userId: req.userId, isDefault: true },
+      data: { isDefault: false }
+    }),
+    prisma.account.update({
+      where: { id },
+      data: { isDefault: true }
+    })
+  ]);
+
+  res.json({ message: 'Cuenta establecida como principal y predeterminada.' });
+}

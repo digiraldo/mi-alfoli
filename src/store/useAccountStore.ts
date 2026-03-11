@@ -10,6 +10,7 @@ interface AccountState {
   updateAccount: (id: string, data: Partial<Account>) => Promise<void>;
   deleteAccount: (id: string) => Promise<void>;
   updateBalance: (id: string, amount: number) => Promise<void>;
+  setDefaultAccount: (id: string) => Promise<void>;
   getAccountStats: (id: string) => Promise<{
     totalIncome: number;
     totalExpense: number;
@@ -28,6 +29,7 @@ function mapAccount(a: any): Account {
     currentBalance: Number(a.currentBalance),
     lastFour: a.lastFour ?? null,
     creditLimit: a.creditLimit != null ? Number(a.creditLimit) : undefined,
+    isDefault: a.isDefault ?? false,
     isActive: a.isActive ?? true,
     createdAt: a.createdAt,
   };
@@ -76,6 +78,16 @@ export const useAccountStore = create<AccountState>()((set, get) => ({
   updateBalance: async (id, amount) => {
     const res = await api.patch<{ account: any }>(`/api/accounts/${id}/balance`, { amount });
     set((s) => ({ accounts: s.accounts.map((a) => (a.id === id ? mapAccount(res.account) : a)) }));
+  },
+
+  setDefaultAccount: async (id: string) => {
+    await api.patch<{ message: string }>(`/api/accounts/${id}/default`);
+    set((s) => ({
+      accounts: s.accounts.map((a) => ({
+        ...a,
+        isDefault: a.id === id,
+      })),
+    }));
   },
 
   getAccountStats: async (id) => {

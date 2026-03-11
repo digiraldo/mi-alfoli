@@ -83,6 +83,7 @@ model Account {
   currentBalance Decimal     @default(0) @map("current_balance") @db.Decimal(15, 2)
   creditLimit    Decimal?    @map("credit_limit") @db.Decimal(15, 2)
   lastFour       String?     @map("last_four") @db.VarChar(4)
+  isDefault      Boolean     @default(false) @map("is_default")
   isActive       Boolean     @default(true) @map("is_active")
   createdAt      DateTime    @default(now()) @map("created_at")
 

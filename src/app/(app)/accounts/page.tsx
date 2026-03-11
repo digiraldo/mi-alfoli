@@ -7,6 +7,8 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
@@ -33,7 +35,7 @@ const PRESET_COLORS = [
 
 export default function AccountsPage() {
   const theme = useTheme();
-  const { accounts, fetchAccounts, addAccount, updateAccount, deleteAccount } = useAccountStore();
+  const { accounts, fetchAccounts, addAccount, updateAccount, deleteAccount, setDefaultAccount } = useAccountStore();
   const { goals, fetchGoals } = useSavingsStore();
   const { user } = useAuthStore();
   const [openDialog, setOpenDialog] = useState(false);
@@ -225,8 +227,21 @@ export default function AccountsPage() {
                         {acc.name}
                       </Typography>
                     </Box>
-                    {/* Botones editar / eliminar */}
+                    {/* Botones favorito / editar / eliminar */}
                     <Box sx={{ display: 'flex', gap: '3px', flexShrink: 0 }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => setDefaultAccount(acc.id)}
+                        sx={{
+                          color: acc.isDefault ? '#FFD700' : '#fff',
+                          bgcolor: 'rgba(255,255,255,0.2)',
+                          p: '5px',
+                          '&:hover': { bgcolor: 'rgba(255,255,255,0.35)' },
+                        }}
+                        title={acc.isDefault ? "Cuenta Principal" : "Marcar como Principal"}
+                      >
+                        {acc.isDefault ? <StarIcon sx={{ fontSize: '1.15rem', filter: 'drop-shadow(0px 0px 4px rgba(255, 215, 0, 0.8))' }} /> : <StarBorderIcon sx={{ fontSize: '1.15rem' }} />}
+                      </IconButton>
                       <IconButton
                         size="small"
                         onClick={() => handleOpenEdit(acc)}

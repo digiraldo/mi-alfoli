@@ -7,6 +7,7 @@ import {
   deleteAccount,
   updateBalance,
   getAccountStats,
+  setDefaultAccount,
 } from '../controllers/accounts.controller';
 
 export const accountRoutes = Router();
@@ -17,4 +18,5 @@ accountRoutes.post('/', createAccount);
 accountRoutes.put('/:id', updateAccount);
 accountRoutes.delete('/:id', deleteAccount);
 accountRoutes.patch('/:id/balance', updateBalance);
+accountRoutes.patch('/:id/default', setDefaultAccount);
 accountRoutes.get('/:id/stats', getAccountStats);

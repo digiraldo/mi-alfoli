@@ -76,7 +76,8 @@ export default function TransactionsPage() {
   const openAdd = (type: 'income' | 'expense') => {
     setEditing(null);
     const defaultCat = categories.find((c) => c.type === type)?.id || '';
-    setForm({ ...EMPTY_TX, type, categoryId: defaultCat });
+    const defaultAcc = accounts.find((a) => a.isDefault)?.id || '';
+    setForm({ ...EMPTY_TX, type, categoryId: defaultCat, accountId: defaultAcc });
     setDialogOpen(true);
   };
 

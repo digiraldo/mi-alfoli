@@ -1,0 +1,13 @@
+
+> mi-alfoli-server@1.0.0 dev
+> ts-node-dev --respawn --transpile-only src/server.ts
+
+[INFO] 15:25:34 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.9.3)
+[Cron] Ô£à Recordatorio de gastos fijos programado (8:00 AM diario).
+ÔÅ│ Job Programado: Percentage Rollover (Cierre y Arrastre Mensual de Porcentajes)
+Error: listen EADDRINUSE: address already in use 0.0.0.0:4000
+    at Server.setupListenHandle [as _listen2] (node:net:1912:16)
+    at listenInCluster (node:net:1969:12)
+    at node:net:2178:7
+    at processTicksAndRejections (node:internal/process/task_queues:90:21)
+[ERROR] 15:25:36 Error: listen EADDRINUSE: address already in use 0.0.0.0:4000

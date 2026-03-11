@@ -32,6 +32,7 @@ export interface Account {
   currentBalance: number;
   creditLimit?: number;
   lastFour?: string | null;
+  isDefault?: boolean;
   isActive: boolean;
   createdAt?: string;
 }
