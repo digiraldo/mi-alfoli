@@ -116,6 +116,7 @@ async function run() {
     { id: 'cat-017', name: 'Hogar', type: 'expense', icon: '🏠', color: '#795548', isDefault: true },
     { id: 'cat-018', name: 'Donación', type: 'expense', icon: '❤️', color: '#E91E63', isDefault: true },
     { id: 'cat-019', name: 'Diezmo y Ofrendas', type: 'expense', icon: '🙏', color: '#006064', isDefault: true },
+    { id: 'cat-031', name: 'Viajes y Vacaciones', type: 'expense', icon: '✈️', color: '#00BCD4', isDefault: true },
     { id: 'cat-020', name: 'Otros gastos', type: 'expense', icon: '📋', color: '#9E9E9E', isDefault: true },
   ];
 
