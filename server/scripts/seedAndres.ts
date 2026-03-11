@@ -82,28 +82,53 @@ async function run() {
   });
 
   // 4. Creando Categorías
-  console.log('🏷️ Creando Categorías...');
-  // Categorías de Ingreso
-  const salaryCat = await prisma.category.create({
-    data: { userId: andres.id, name: 'Salario', color: '#1B5E20', icon: '💼', type: TransactionType.income }
-  });
-  const bonusCat = await prisma.category.create({
-    data: { userId: andres.id, name: 'Honorarios / Extras', color: '#00695C', icon: '💰', type: TransactionType.income }
-  });
+  console.log('🏷️ Creando 20 Categorías Por Defecto...');
+  
+  const defaultCategories = [
+    { id: 'cat-001', name: 'Sueldo', type: 'income', icon: '💼', color: '#4CAF50', isDefault: true },
+    { id: 'cat-002', name: 'Freelance', type: 'income', icon: '💻', color: '#8BC34A', isDefault: true },
+    { id: 'cat-003', name: 'Inversiones', type: 'income', icon: '📈', color: '#00BCD4', isDefault: true },
+    { id: 'cat-004', name: 'Regalos', type: 'income', icon: '🎁', color: '#E91E63', isDefault: true },
+    { id: 'cat-005', name: 'Reembolsos', type: 'income', icon: '🔄', color: '#FF9800', isDefault: true },
+    { id: 'cat-006', name: 'Otros ingresos', type: 'income', icon: '📋', color: '#9E9E9E', isDefault: true },
+    { id: 'cat-007', name: 'Servicios', type: 'expense', icon: '💡', color: '#FF5722', isDefault: true },
+    { id: 'cat-008', name: 'Transporte', type: 'expense', icon: '🚗', color: '#2196F3', isDefault: true },
+    { id: 'cat-009', name: 'Alimentación', type: 'expense', icon: '🍔', color: '#4CAF50', isDefault: true },
+    { id: 'cat-010', name: 'Mercado', type: 'expense', icon: '🛒', color: '#8BC34A', isDefault: true },
+    { id: 'cat-011', name: 'Restaurantes', type: 'expense', icon: '🍽️', color: '#FF9800', isDefault: true },
+    { id: 'cat-012', name: 'Entretenimiento', type: 'expense', icon: '🎬', color: '#9C27B0', isDefault: true },
+    { id: 'cat-013', name: 'Suscripciones', type: 'expense', icon: '📱', color: '#3F51B5', isDefault: true },
+    { id: 'cat-014', name: 'Salud', type: 'expense', icon: '🏥', color: '#F44336', isDefault: true },
+    { id: 'cat-015', name: 'Educación', type: 'expense', icon: '📚', color: '#00BCD4', isDefault: true },
+    { id: 'cat-016', name: 'Ropa', type: 'expense', icon: '👕', color: '#E91E63', isDefault: true },
+    { id: 'cat-017', name: 'Hogar', type: 'expense', icon: '🏠', color: '#795548', isDefault: true },
+    { id: 'cat-018', name: 'Donación', type: 'expense', icon: '❤️', color: '#E91E63', isDefault: true },
+    { id: 'cat-019', name: 'Diezmo y Ofrendas', type: 'expense', icon: '🙏', color: '#006064', isDefault: true },
+    { id: 'cat-020', name: 'Otros gastos', type: 'expense', icon: '📋', color: '#9E9E9E', isDefault: true },
+  ];
 
-  // Categorías de Egreso
-  const foodCat = await prisma.category.create({
-    data: { userId: andres.id, name: 'Mercado y Comida', color: '#FF5722', icon: '🛒', type: TransactionType.expense }
-  });
-  const transportCat = await prisma.category.create({
-    data: { userId: andres.id, name: 'Transporte', color: '#FF9800', icon: '🚗', type: TransactionType.expense }
-  });
-  const homeCat = await prisma.category.create({
-    data: { userId: andres.id, name: 'Hogar / Arriendo', color: '#795548', icon: '🏠', type: TransactionType.expense }
-  });
-  const offeringCat = await prisma.category.create({
-    data: { userId: andres.id, name: 'Diezmo y Ofrendas', color: '#FBC02D', icon: '🙏', type: TransactionType.expense }
-  });
+  const catsMap: Record<string, string> = {}; // { "Nombre": "ID en BaseDatos" }
+
+  for (const c of defaultCategories) {
+    const newCat = await prisma.category.create({
+      data: { 
+        userId: andres.id, 
+        name: c.name, 
+        color: c.color, 
+        icon: c.icon, 
+        type: c.type as TransactionType,
+        isDefault: c.isDefault 
+      }
+    });
+    catsMap[newCat.name] = newCat.id;
+  }
+
+  // Asignaciones Dinámicas de IDs (para nuestras transacciones mock de más abajo)
+  const salaryCatId = catsMap['Sueldo'];
+  const bonusCatId = catsMap['Freelance'];
+  const foodCatId = catsMap['Mercado'];
+  const transportCatId = catsMap['Transporte'];
+  const offeringCatId = catsMap['Diezmo y Ofrendas'];
 
 
   // 5. Creando Reglas de Porcentaje
@@ -201,7 +226,7 @@ async function run() {
     data: {
       userId: andres.id,
       accountId: currentAccount.id,
-      categoryId: salaryCat.id,
+      categoryId: salaryCatId,
       type: TransactionType.income,
       amount: 3200000,
       date: dayjs().subtract(1, 'day').toDate(),
@@ -213,7 +238,7 @@ async function run() {
     data: {
       userId: andres.id,
       accountId: currentAccount.id,
-      categoryId: bonusCat.id,
+      categoryId: bonusCatId,
       type: TransactionType.income,
       amount: 400000,
       date: dayjs().subtract(7, 'day').toDate(),
@@ -248,7 +273,7 @@ async function run() {
     data: {
       userId: andres.id,
       accountId: currentAccount.id,
-      categoryId: offeringCat.id,
+      categoryId: offeringCatId,
       percentageRuleId: diezmoRule?.id,
       type: TransactionType.expense,
       amount: 320000, 
@@ -270,7 +295,7 @@ async function run() {
     data: {
       userId: andres.id,
       accountId: cashAccount.id,
-      categoryId: foodCat.id,
+      categoryId: foodCatId,
       type: TransactionType.expense,
       amount: 180000,
       date: dayjs().subtract(3, 'day').toDate(),
@@ -282,7 +307,7 @@ async function run() {
     data: {
       userId: andres.id,
       accountId: creditCard.id,
-      categoryId: transportCat.id,
+      categoryId: transportCatId,
       type: TransactionType.expense,
       amount: 35000,
       date: dayjs().subtract(4, 'day').toDate(),
