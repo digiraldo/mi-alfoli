@@ -91,6 +91,14 @@ async function run() {
     { id: 'cat-004', name: 'Regalos', type: 'income', icon: '🎁', color: '#E91E63', isDefault: true },
     { id: 'cat-005', name: 'Reembolsos', type: 'income', icon: '🔄', color: '#FF9800', isDefault: true },
     { id: 'cat-006', name: 'Otros ingresos', type: 'income', icon: '📋', color: '#9E9E9E', isDefault: true },
+    // --- NUEVAS CATEGORÍAS INFLUENCER / PRODUCTOR ---
+    { id: 'cat-021', name: 'Ingresos YouTube', type: 'income', icon: '🎬', color: '#F44336', isDefault: true },
+    { id: 'cat-022', name: 'Regalías DistroKid', type: 'income', icon: '🎵', color: '#9C27B0', isDefault: true },
+    { id: 'cat-023', name: 'Marketing Digital', type: 'income', icon: '📱', color: '#00BCD4', isDefault: true },
+    { id: 'cat-024', name: 'Producción Audiovisual', type: 'income', icon: '🎥', color: '#607D8B', isDefault: true },
+    { id: 'cat-025', name: 'Eventos (Foto/Video)', type: 'income', icon: '📸', color: '#FF9800', isDefault: true },
+    { id: 'cat-026', name: 'Pensión / Jubilación', type: 'income', icon: '👴', color: '#795548', isDefault: true },
+    // ------------------------------------------------
     { id: 'cat-007', name: 'Servicios', type: 'expense', icon: '💡', color: '#FF5722', isDefault: true },
     { id: 'cat-008', name: 'Transporte', type: 'expense', icon: '🚗', color: '#2196F3', isDefault: true },
     { id: 'cat-009', name: 'Alimentación', type: 'expense', icon: '🍔', color: '#4CAF50', isDefault: true },
@@ -129,6 +137,9 @@ async function run() {
   const foodCatId = catsMap['Mercado'];
   const transportCatId = catsMap['Transporte'];
   const offeringCatId = catsMap['Diezmo y Ofrendas'];
+  const youtubeCatId = catsMap['Ingresos YouTube'];
+  const distroKidCatId = catsMap['Regalías DistroKid'];
+  const eventsCatId = catsMap['Eventos (Foto/Video)'];
 
 
   // 5. Creando Reglas de Porcentaje
@@ -238,15 +249,39 @@ async function run() {
     data: {
       userId: andres.id,
       accountId: currentAccount.id,
-      categoryId: bonusCatId,
+      categoryId: youtubeCatId,
       type: TransactionType.income,
-      amount: 400000,
-      date: dayjs().subtract(7, 'day').toDate(),
-      description: 'Venta sitio web a cliente',
+      amount: 850000,
+      date: dayjs().subtract(5, 'day').toDate(),
+      description: 'Pago Adsense YouTube (Mes Anterior)',
     }
   });
 
-  const totalIncomeMes = 3600000;
+  await prisma.transaction.create({
+    data: {
+      userId: andres.id,
+      accountId: currentAccount.id,
+      categoryId: distroKidCatId,
+      type: TransactionType.income,
+      amount: 450000,
+      date: dayjs().subtract(2, 'day').toDate(),
+      description: 'Regalías Spotify & Apple Music',
+    }
+  });
+
+  await prisma.transaction.create({
+    data: {
+      userId: andres.id,
+      accountId: cashAccount.id,
+      categoryId: eventsCatId,
+      type: TransactionType.income,
+      amount: 550000,
+      date: dayjs().subtract(8, 'day').toDate(),
+      description: 'Anticipo Cobertura Boda (Foto/Video)',
+    }
+  });
+
+  const totalIncomeMes = 5050000; // Recalculado con los nuevos montos
 
   for (const rule of createdRules) {
     const percentageNumber = Number(rule.percentage);
