@@ -97,6 +97,7 @@ async function run() {
     { id: 'cat-023', name: 'Marketing Digital', type: 'income', icon: '📱', color: '#00BCD4', isDefault: true },
     { id: 'cat-024', name: 'Producción Audiovisual', type: 'income', icon: '🎥', color: '#607D8B', isDefault: true },
     { id: 'cat-025', name: 'Eventos (Foto/Video)', type: 'income', icon: '📸', color: '#FF9800', isDefault: true },
+    { id: 'cat-027', name: 'Patrocinios / Marcas', type: 'income', icon: '🤝', color: '#8BC34A', isDefault: true },
     { id: 'cat-026', name: 'Pensión / Jubilación', type: 'income', icon: '👴', color: '#795548', isDefault: true },
     // ------------------------------------------------
     { id: 'cat-007', name: 'Servicios', type: 'expense', icon: '💡', color: '#FF5722', isDefault: true },
