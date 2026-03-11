@@ -37,6 +37,8 @@ model User {
   pushSubscriptions       PushSubscription[]
   savingsGoals            SavingsGoal[]
   goalWithdrawals         GoalWithdrawal[]
+  ownedSharedGroups       SharedGroup[]      @relation("GroupOwner")
+  sharedMemberships       SharedMember[]
 
   @@map("users")
 }
@@ -105,6 +107,8 @@ model Transaction {
   percentageRule   PercentageRule? @relation(fields: [percentageRuleId], references: [id])
   linkedGoalId     String?         @map("linked_goal_id")
   linkedGoal       SavingsGoal?    @relation("SavingsGoalTransactions", fields: [linkedGoalId], references: [id])
+  sharedGroupId    String?         @map("shared_group_id")
+  sharedGroup      SharedGroup?    @relation("GroupTransactions", fields: [sharedGroupId], references: [id])
   type             TransactionType
   amount           Decimal         @db.Decimal(15, 2)
   description      String
@@ -273,4 +277,37 @@ model GoalWithdrawal {
   createdAt DateTime    @default(now()) @map("created_at")
 
   @@map("goal_withdrawals")
+}
+
+// ── GASTOS COMPARTIDOS (SHARED GROUPS) ────────────────────
+model SharedGroup {
+  id            String         @id @default(uuid())
+  ownerId       String         @map("owner_id")
+  owner         User           @relation("GroupOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  icon          String         @default("🌴")
+  color         String         @default("#00BCD4")
+  totalBudget   Decimal?       @map("total_budget") @db.Decimal(15, 2)
+  isActive      Boolean        @default(true) @map("is_active")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  members       SharedMember[]
+  transactions  Transaction[]  @relation("GroupTransactions")
+
+  @@map("shared_groups")
+}
+
+// ── MIEMBROS DE GASTOS COMPARTIDOS ─────────────────────────
+model SharedMember {
+  id             String      @id @default(uuid())
+  sharedGroupId  String      @map("shared_group_id")
+  sharedGroup    SharedGroup @relation(fields: [sharedGroupId], references: [id], onDelete: Cascade)
+  userId         String      @map("user_id")
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt       DateTime    @default(now()) @map("joined_at")
+
+  @@unique([sharedGroupId, userId])
+  @@map("shared_members")
 }
