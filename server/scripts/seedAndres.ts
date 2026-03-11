@@ -100,6 +100,8 @@ async function run() {
     { id: 'cat-027', name: 'Patrocinios / Marcas', type: 'income', icon: '🤝', color: '#8BC34A', isDefault: true },
     { id: 'cat-028', name: 'Ofrenda / Semilla', type: 'income', icon: '🕊️', color: '#FBC02D', isDefault: true },
     { id: 'cat-026', name: 'Pensión / Jubilación', type: 'income', icon: '👴', color: '#795548', isDefault: true },
+    { id: 'cat-029', name: 'Rentas / Alquileres', type: 'income', icon: '🔑', color: '#4CAF50', isDefault: true },
+    { id: 'cat-030', name: 'Plataformas (Uber/Airbnb)', type: 'income', icon: '🚙', color: '#FF9800', isDefault: true },
     // ------------------------------------------------
     { id: 'cat-007', name: 'Servicios', type: 'expense', icon: '💡', color: '#FF5722', isDefault: true },
     { id: 'cat-008', name: 'Transporte', type: 'expense', icon: '🚗', color: '#2196F3', isDefault: true },
