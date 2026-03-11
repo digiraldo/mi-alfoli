@@ -53,7 +53,7 @@ Para correr el proyecto localmente, necesitas tener instalado [Node.js](https://
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/TU-USUARIO/mi-alfoli.git
+git clone https://github.com/digiraldo/mi-alfoli.git
 cd mi-alfoli
 ```
 
