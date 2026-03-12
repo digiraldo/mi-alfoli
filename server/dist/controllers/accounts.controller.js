@@ -6,6 +6,7 @@ exports.updateAccount = updateAccount;
 exports.deleteAccount = deleteAccount;
 exports.updateBalance = updateBalance;
 exports.getAccountStats = getAccountStats;
+exports.setDefaultAccount = setDefaultAccount;
 const prisma_1 = require("../lib/prisma");
 const zod_1 = require("zod");
 const accountSchema = zod_1.z.object({
@@ -105,4 +106,25 @@ async function getAccountStats(req, res) {
     const totalIncome = transactions.filter((t) => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
     const totalExpense = transactions.filter((t) => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
     res.json({ account: existing, totalIncome, totalExpense, transactions });
+}
+// ── PATCH /api/accounts/:id/default ───────────────────────
+async function setDefaultAccount(req, res) {
+    const id = req.params.id;
+    const existing = await prisma_1.prisma.account.findFirst({ where: { id, userId: req.userId } });
+    if (!existing) {
+        res.status(404).json({ message: 'Cuenta no encontrada' });
+        return;
+    }
+    // Transacción segura: Apaga TODAS las anteriores y enciende exclusivamente la seleccionada.
+    await prisma_1.prisma.$transaction([
+        prisma_1.prisma.account.updateMany({
+            where: { userId: req.userId, isDefault: true },
+            data: { isDefault: false }
+        }),
+        prisma_1.prisma.account.update({
+            where: { id },
+            data: { isDefault: true }
+        })
+    ]);
+    res.json({ message: 'Cuenta establecida como principal y predeterminada.' });
 }

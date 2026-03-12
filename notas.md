@@ -162,11 +162,14 @@ git add server/scripts/seedAndres.ts && git commit -m "fix: restaura 20 categori
 - Tengo una duda y Tú como accesor y diseñador profesional, ayudame a lo siguiente, ya que recuerdo que necesito trabajar de la siguiente manera:
 - Las tarjetas creadas en mis cuentas es donde va a estar el dinero. Porque esto?, ya que cuando realice un egreso de inversion para un cdt, etf ,cryptos, etc, el dinero tiene que salir de mi cuenta a la cuenta del broker o aplicacion de inversion.
 - De acuerdo a lo anterior quiero que la suma del saldo de  las tarjetas dentro de Mis Cuentas, sea el total que tengo, que cuando haga un ingreso y no seleccione ninguna cuenta o tarjeta, me haga una tarjeta predeterminada de Ingresos.
-- Es logico lo que te explico? entiendes el concepto?
+- Es logico lo que te explico? entiendes el concepto
 
 
 
 
+
+- Tengo un inconveniente que no me deja acomodar en mi mente como solucionarlo y por más que lo pienso no doy con la solución o lógica y requiero que me ayudes y es el siguiente:
+    - Tengo cuentas bancarias con tarjetas debito y credito de Colombia y recibo dinero en COP en ellas, pero en la actualidad vivo en mexico y tambien tengo cuentas bancarias debito credito y recibo en ellas dinero en MXN, no se como ingresar esto a Mis cuentas y que me funcione correctamente con los porcentajes y demas funciones de la app. Lo unico que se me ocurre es crear una cuenta para COP y Otra para MXN, pero no se si esto sea lo correcto o si exista una mejor manera de hacerlo. ya que tambien tengo una tarjeta de DolarApp donde he comprado Dolares.
 
 
 

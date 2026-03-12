@@ -13,6 +13,7 @@ import { notificationRoutes } from './routes/notifications.routes';
 import { startBillReminderCron } from './jobs/billReminder.job';
 import { startPercentageRolloverCron } from './jobs/percentageRollover.job';
 import { savingsRoutes } from './routes/savings.routes';
+import sharedGroupsRoutes from './routes/shared-groups.routes';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -83,6 +84,7 @@ app.use('/api/bills', billRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/savings', savingsRoutes);
+app.use('/api/shared-groups', sharedGroupsRoutes);
 
 // ── Start Background Jobs ─────────────────────────────────
 startBillReminderCron();

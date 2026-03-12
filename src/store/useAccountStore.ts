@@ -81,7 +81,7 @@ export const useAccountStore = create<AccountState>()((set, get) => ({
   },
 
   setDefaultAccount: async (id: string) => {
-    await api.patch<{ message: string }>(`/api/accounts/${id}/default`);
+    await api.patch<{ message: string }>(`/api/accounts/${id}/default`, {});
     set((s) => ({
       accounts: s.accounts.map((a) => ({
         ...a,

@@ -39,6 +39,7 @@ const updateProfileSchema = zod_1.z.object({
     currencyCode: zod_1.z.string().length(3).optional(),
     appWebUrl: zod_1.z.string().url('URL inválida').or(zod_1.z.literal('')).optional(),
     timezone: zod_1.z.string().optional(),
+    billingCycleDay: zod_1.z.number().int().min(1).max(31).optional(),
 });
 const changePasswordSchema = zod_1.z.object({
     currentPassword: zod_1.z.string().min(1, 'Contraseña actual requerida'),
@@ -101,7 +102,7 @@ async function register(req, res) {
                 create: DEFAULT_CATEGORIES.map((c) => ({ ...c, isDefault: true })),
             },
         },
-        select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, createdAt: true },
+        select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, billingCycleDay: true, createdAt: true },
     });
     const { accessToken, refreshToken } = generateTokens(user.id);
     await prisma_1.prisma.refreshToken.create({
@@ -148,7 +149,7 @@ async function login(req, res) {
             },
         });
         res.json({
-            user: { id: user.id, email: user.email, fullName: user.fullName, currencyCode: user.currencyCode, timezone: user.timezone, avatarUrl: user.avatarUrl, appWebUrl: user.appWebUrl, createdAt: user.createdAt },
+            user: { id: user.id, email: user.email, fullName: user.fullName, currencyCode: user.currencyCode, timezone: user.timezone, avatarUrl: user.avatarUrl, appWebUrl: user.appWebUrl, billingCycleDay: user.billingCycleDay, createdAt: user.createdAt },
             accessToken,
             refreshToken,
         });
@@ -233,7 +234,7 @@ async function googleLogin(req, res) {
         }
         const tokens = generateTokens(user.id);
         res.json({
-            user: { id: user.id, email: user.email, fullName: user.fullName, currencyCode: user.currencyCode, timezone: user.timezone, avatarUrl: user.avatarUrl, appWebUrl: user.appWebUrl, createdAt: user.createdAt },
+            user: { id: user.id, email: user.email, fullName: user.fullName, currencyCode: user.currencyCode, timezone: user.timezone, avatarUrl: user.avatarUrl, appWebUrl: user.appWebUrl, billingCycleDay: user.billingCycleDay, createdAt: user.createdAt },
             accessToken: tokens.accessToken,
             refreshToken: tokens.refreshToken,
         });
@@ -284,7 +285,7 @@ async function logout(req, res) {
 async function me(req, res) {
     const user = await prisma_1.prisma.user.findUnique({
         where: { id: req.userId },
-        select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, createdAt: true },
+        select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, billingCycleDay: true, createdAt: true },
     });
     if (!user) {
         res.status(404).json({ message: 'Usuario no encontrado' });
@@ -307,7 +308,7 @@ async function updateProfile(req, res) {
         const updatedUser = await prisma_1.prisma.user.update({
             where: { id: req.userId },
             data: dataToUpdate,
-            select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, createdAt: true },
+            select: { id: true, email: true, fullName: true, currencyCode: true, timezone: true, avatarUrl: true, appWebUrl: true, billingCycleDay: true, createdAt: true },
         });
         res.json({ user: updatedUser, message: 'Perfil actualizado' });
     }

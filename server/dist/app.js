@@ -15,7 +15,9 @@ const bills_routes_1 = require("./routes/bills.routes");
 const accounts_routes_1 = require("./routes/accounts.routes");
 const notifications_routes_1 = require("./routes/notifications.routes");
 const billReminder_job_1 = require("./jobs/billReminder.job");
+const percentageRollover_job_1 = require("./jobs/percentageRollover.job");
 const savings_routes_1 = require("./routes/savings.routes");
+const shared_groups_routes_1 = __importDefault(require("./routes/shared-groups.routes"));
 const app = (0, express_1.default)();
 app.set('trust proxy', 1);
 // ── CORTE CORTO ABSOLUTO PARA OPTIONS (PREFLIGHT) ────────
@@ -75,8 +77,10 @@ app.use('/api/bills', bills_routes_1.billRoutes);
 app.use('/api/accounts', accounts_routes_1.accountRoutes);
 app.use('/api/notifications', notifications_routes_1.notificationRoutes);
 app.use('/api/savings', savings_routes_1.savingsRoutes);
+app.use('/api/shared-groups', shared_groups_routes_1.default);
 // ── Start Background Jobs ─────────────────────────────────
 (0, billReminder_job_1.startBillReminderCron)();
+(0, percentageRollover_job_1.startPercentageRolloverCron)();
 const prisma_1 = require("./lib/prisma");
 app.get('/api/debug', async (req, res) => {
     try {

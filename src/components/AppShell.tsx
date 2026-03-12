@@ -17,6 +17,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import PeopleIcon from '@mui/icons-material/People';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useThemeMode } from '@/components/ThemeRegistry';
@@ -29,6 +30,7 @@ const allNavItems = [
   { label: 'Gastos Fijos', shortLabel: 'Fijos', icon: <ReceiptIcon />, path: '/bills' },
   { label: 'Porcentajes', shortLabel: '%', icon: <PieChartIcon />, path: '/percentages' },
   { label: 'Fondos y Metas', shortLabel: 'Fondos', icon: <SavingsIcon />, path: '/savings' },
+  { label: 'Compartidos', shortLabel: 'Grupos', icon: <PeopleIcon />, path: '/shared' },
   { label: 'Cuentas', shortLabel: 'Cuentas', icon: <AccountBalanceWalletIcon />, path: '/accounts' },
   { label: 'Estadísticas', shortLabel: 'Stats', icon: <BarChartIcon />, path: '/stats' },
 ];

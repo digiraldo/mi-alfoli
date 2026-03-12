@@ -50,6 +50,9 @@ export interface Transaction {
   date: string; // YYYY-MM-DD
   isRecurring?: boolean;
   tags?: string[];
+  sharedGroupId?: string;
+  user?: Partial<User>;
+  category?: Partial<Category>;
   createdAt: string;
   updatedAt: string;
 }
@@ -147,4 +150,49 @@ export interface GoalWithdrawal {
   category: string;
   date: string;
   createdAt: string;
+}
+
+export interface SharedGroup {
+  id: string;
+  ownerId: string;
+  owner?: Partial<User>;
+  title: string;
+  description?: string;
+  icon: string;
+  color: string;
+  totalBudget?: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  members?: SharedMember[];
+  transactions?: Transaction[];
+  _count?: {
+    transactions: number;
+  };
+}
+
+export interface SharedMember {
+  id: string;
+  sharedGroupId: string;
+  userId: string;
+  user?: Partial<User>;
+  joinedAt: string;
+}
+
+export interface SharedBalance {
+  totalSpent: number;
+  fairShare: number;
+  balances: {
+    userId: string;
+    name: string;
+    paid: number;
+    balance: number;
+  }[];
+  settlements: {
+    fromId: string;
+    fromName: string;
+    toId: string;
+    toName: string;
+    amount: number;
+  }[];
 }

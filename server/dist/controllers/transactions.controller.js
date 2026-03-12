@@ -51,6 +51,7 @@ async function getTransactions(req, res) {
 async function createTransaction(req, res) {
     const parsed = transactionSchema.safeParse(req.body);
     if (!parsed.success) {
+        console.error('[Error de Validación Zod en Transacción]:', parsed.error.flatten().fieldErrors);
         res.status(400).json({ message: 'Datos inválidos', errors: parsed.error.flatten().fieldErrors });
         return;
     }

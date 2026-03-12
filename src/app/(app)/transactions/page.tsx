@@ -16,6 +16,8 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { useTransactionStore } from '@/store/useTransactionStore';
 import { useAccountStore } from '@/store/useAccountStore';
 import { usePercentageStore } from '@/store/usePercentageStore';
+import { useSavingsStore } from '@/store/useSavingsStore';
+import { useSharedStore } from '@/store/useSharedStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatCurrency } from '@/utils/format';
 import { Transaction } from '@/types';
@@ -30,13 +32,16 @@ const EMPTY_TX: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'> =
   accountId: '', // Por defecto no hay cuenta seleccionada
   percentageRuleId: '', 
   date: new Date().toISOString().split('T')[0],
+  sharedGroupId: '',
 };
 
 export default function TransactionsPage() {
   const theme = useTheme();
   const { transactions, categories, addTransaction, updateTransaction, deleteTransaction } = useTransactionStore();
-  const { accounts, fetchAccounts } = useAccountStore();
+  const { accounts, fetchAccounts, addAccount, updateAccount, deleteAccount, setDefaultAccount } = useAccountStore();
   const { rules, fetchRules } = usePercentageStore();
+  const { goals, fetchGoals } = useSavingsStore();
+  const { groups, fetchGroups } = useSharedStore();
   const { user } = useAuthStore();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -49,10 +54,13 @@ export default function TransactionsPage() {
   const getCat = (id: string) => categories.find((c) => c.id === id);
   const getAcc = (id?: string) => accounts.find((a) => a.id === id);
   const getRule = (id?: string) => rules.find((r) => r.id === id);
+  const getGroup = (id?: string) => groups.find((g) => g.id === id);
 
   React.useEffect(() => {
     fetchAccounts();
     fetchRules();
+    fetchGoals();
+    fetchGroups();
   }, []);
 
   const filtered = useMemo(() => {
@@ -77,13 +85,13 @@ export default function TransactionsPage() {
     setEditing(null);
     const defaultCat = categories.find((c) => c.type === type)?.id || '';
     const defaultAcc = accounts.find((a) => a.isDefault)?.id || '';
-    setForm({ ...EMPTY_TX, type, categoryId: defaultCat, accountId: defaultAcc });
+    setForm({ ...EMPTY_TX, type, categoryId: defaultCat, accountId: defaultAcc, sharedGroupId: '' });
     setDialogOpen(true);
   };
 
   const openEdit = (tx: Transaction) => {
     setEditing(tx);
-    setForm({ type: tx.type, amount: tx.amount, description: tx.description, categoryId: tx.categoryId, accountId: tx.accountId || '', percentageRuleId: tx.percentageRuleId || '', date: tx.date });
+    setForm({ type: tx.type, amount: tx.amount, description: tx.description, categoryId: tx.categoryId, accountId: tx.accountId || '', percentageRuleId: tx.percentageRuleId || '', date: tx.date, sharedGroupId: tx.sharedGroupId || '' });
     setDialogOpen(true);
   };
 
@@ -218,6 +226,13 @@ export default function TransactionsPage() {
                                 sx={{ fontSize: '0.6rem', height: 16, bgcolor: alpha(getRule(tx.percentageRuleId)?.color || '#006064', 0.15), color: getRule(tx.percentageRuleId)?.color }}
                               />
                             )}
+                            {tx.sharedGroupId && (
+                              <Chip
+                                label={getGroup(tx.sharedGroupId)?.title ?? 'Grupo'}
+                                size="small"
+                                sx={{ fontSize: '0.6rem', height: 16, bgcolor: alpha(getGroup(tx.sharedGroupId)?.color || '#006064', 0.15), color: getGroup(tx.sharedGroupId)?.color }}
+                              />
+                            )}
                           </Stack>
                         }
                       />
@@ -266,7 +281,7 @@ export default function TransactionsPage() {
               onChange={(_, val) => {
                 if (val) {
                   const defaultCat = categories.find((c) => c.type === val)?.id || '';
-                  setForm({ ...form, type: val, categoryId: defaultCat, percentageRuleId: '' });
+                  setForm({ ...form, type: val, categoryId: defaultCat, percentageRuleId: '', sharedGroupId: '' });
                 }
               }}
               fullWidth
@@ -346,6 +361,21 @@ export default function TransactionsPage() {
                 </Select>
               </FormControl>
             )}
+            <FormControl fullWidth>
+              <InputLabel>Evento / Grupo Compartido</InputLabel>
+              <Select
+                value={form.sharedGroupId || ''}
+                onChange={(e) => setForm({ ...form, sharedGroupId: e.target.value })}
+                label="Evento / Grupo Compartido"
+              >
+                <MenuItem value=""><em>Ninguno (Gasto Personal)</em></MenuItem>
+                {groups.map((g) => (
+                  <MenuItem key={g.id} value={g.id}>
+                    {g.icon} {g.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextField
               label="Fecha"
               type="date"
