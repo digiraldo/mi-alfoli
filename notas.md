@@ -169,7 +169,7 @@ git add server/scripts/seedAndres.ts && git commit -m "fix: restaura 20 categori
 
 "Muéstrame exactamente qué archivos modificaste y un resumen de los cambios y un super resumen o titulo para el commit"
 
-
+"Haz el commit y haz push a la rama main en GitHub"
 
 
 
