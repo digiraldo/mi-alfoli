@@ -169,17 +169,23 @@ git add server/scripts/seedAndres.ts && git commit -m "fix: restaura 20 categori
 
 "Muéstrame exactamente qué archivos modificaste y un resumen de los cambios y un super resumen o titulo para el commit"
 
-"Haz el commit y haz push a la rama main en GitHub"
+"Haz el commit corto o lo mas resumido posible, de acuerdo a lo que acabas de hacer y haz push a la rama main en GitHub"
 
 
-
+- Cuando actualizo algo y voy a verificar en la web, se actualiza o recarga la pagina muchas veces.
+- Que el modo claro o oscuro se guarde en el localStorage.
 
 - Tengo un inconveniente que no me deja acomodar en mi mente como solucionarlo y por más que lo pienso no doy con la solución o lógica y requiero que me ayudes y es el siguiente:
     - Tengo cuentas bancarias con tarjetas debito y credito de Colombia y recibo dinero en COP en ellas, pero en la actualidad vivo en mexico y tambien tengo cuentas bancarias debito credito y recibo en ellas dinero en MXN, no se como ingresar esto a Mis cuentas y que me funcione correctamente con los porcentajes y demas funciones de la app. Lo unico que se me ocurre es crear una cuenta para COP y Otra para MXN, pero no se si esto sea lo correcto o si exista una mejor manera de hacerlo. ya que tambien tengo una tarjeta de DolarApp donde he comprado Dolares.
 
 
 
+2. Propuesta para tus Cuentas Multi-moneda (Estrategia Empresarial): Tras analizar tu caso corporativo entre Colombia, México y DolarApp, la mejor práctica es:
 
+Cuentas por Moneda: Sí, crea una cuenta específica para cada moneda (ej: "Nequi - COP", "BBVA - MXN", "DolarApp - USD").
+Tasa de Cambio: En la app, cada transacción de ingreso debe registrarse en la moneda de la cuenta.
+Conversión de Patrimonio: Para que el total de tu app tenga sentido, te propongo añadir un campo opcional de "Moneda" a nivel de Cuenta Bancaria. Así, la app podrá convertir (usando una tasa manual o API) todo a tu moneda principal (COP) para darte tu Patrimonio Global real.
+¿Te gustaría que implementemos esta capacidad multi-moneda para que tus porcentajes y balances se calculen convirtiendo MXN/USD a COP automáticamente?
 
 
 

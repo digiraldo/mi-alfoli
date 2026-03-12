@@ -15,8 +15,9 @@ import { useTransactionStore } from '@/store/useTransactionStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatCurrency } from '@/utils/format';
 import { PercentageRule } from '@/types';
-import { format } from 'date-fns';
+import { format, isWithinInterval } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { getFinancialCycle } from '@/utils/date-utils';
 
 const PRESET_COLORS = [
   '#006064', '#FFB300', '#BF360C', '#00838F', '#4DD0E1', '#E64A19', '#7CB342', 
@@ -41,14 +42,14 @@ export default function PercentagesPage() {
   const [form, setForm] = useState({ ...EMPTY_RULE });
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth() + 1;
+  const cycle = getFinancialCycle(user?.billingCycleDay || 1);
 
   const totalPct = getTotalPercentage();
+  
+  // Filtrar ingresos dentro del ciclo financiero
   const totalIncome = transactions.filter((tx) => {
     const d = new Date(tx.date);
-    return tx.type === 'income' && d.getMonth() + 1 === currentMonth && d.getFullYear() === currentYear;
+    return tx.type === 'income' && isWithinInterval(d, { start: cycle.startDate, end: cycle.endDate });
   }).reduce((s, tx) => s + tx.amount, 0);
 
   const openAdd = () => {
@@ -74,7 +75,7 @@ export default function PercentagesPage() {
   };
 
   const getExecution = (ruleId: string) =>
-    executions.find((e) => e.percentageRuleId === ruleId && e.year === currentYear && e.month === currentMonth);
+    executions.find((e) => e.percentageRuleId === ruleId && e.year === cycle.endDate.getFullYear() && e.month === (cycle.endDate.getMonth() + 1));
 
   return (
     <Box>
@@ -83,7 +84,7 @@ export default function PercentagesPage() {
         <Box>
           <Typography variant="h4" fontWeight={800}>Sistema de Porcentajes</Typography>
           <Typography variant="body2" color="text.secondary" mt={0.5}>
-            Distribuye tus ingresos con propósito — {format(today, 'MMMM yyyy', { locale: es })}
+            Distribuye tus ingresos con propósito — Ciclo de {cycle.periodName} ({cycle.rangeLabel})
           </Typography>
         </Box>
         <Button variant="contained" startIcon={<AddIcon />} onClick={openAdd} sx={{ fontWeight: 700 }}>
@@ -156,7 +157,13 @@ export default function PercentagesPage() {
           const baseAllocated = exec?.allocatedAmount ?? (totalIncome * rule.percentage / 100);
           const carriedOver = exec?.carriedOverAmount ?? 0;
           const allocated = baseAllocated + carriedOver;
-          const executed = exec?.executedAmount ?? 0;
+          // Filtrar gastos vinculados a esta regla DENTRO del ciclo financiero
+          const executed = transactions.filter(tx => 
+            tx.percentageRuleId === rule.id && 
+            tx.type === 'expense' &&
+            isWithinInterval(new Date(tx.date), { start: cycle.startDate, end: cycle.endDate })
+          ).reduce((sum, tx) => sum + tx.amount, 0);
+
           const pct = allocated > 0 ? Math.min(Math.round((executed / allocated) * 100), 100) : 0;
           const surplus = allocated - executed;
 
@@ -192,7 +199,12 @@ export default function PercentagesPage() {
                   {/* Progress */}
                   <Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                      <Typography variant="caption" fontWeight={600} color="text.secondary">Ejecución del mes</Typography>
+                      <Typography variant="caption" fontWeight={600} color="text.secondary">
+                        Ejecución de {cycle.periodName} 
+                        <Typography component="span" variant="caption" sx={{ ml: 1, opacity: 0.7 }}>
+                          ({cycle.rangeLabel})
+                        </Typography>
+                      </Typography>
                       <Typography variant="caption" fontWeight={700} color={pct >= 100 ? 'success.main' : 'text.primary'}>{pct}%</Typography>
                     </Box>
                     <LinearProgress

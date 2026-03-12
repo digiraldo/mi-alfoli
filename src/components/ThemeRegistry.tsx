@@ -18,8 +18,30 @@ export const useThemeMode = () => useContext(ThemeContext);
 
 export default function ThemeRegistry({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<ThemeMode>('light');
-  const toggleTheme = () => setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+  const [mounted, setMounted] = useState(false);
+
+  // Cargar tema inicial
+  React.useEffect(() => {
+    const savedMode = localStorage.getItem('mi-alfoli-theme') as ThemeMode;
+    if (savedMode) {
+      setMode(savedMode);
+    }
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = () => {
+    setMode((prev) => {
+      const newMode = prev === 'light' ? 'dark' : 'light';
+      localStorage.setItem('mi-alfoli-theme', newMode);
+      return newMode;
+    });
+  };
+
   const theme = useMemo(() => getTheme(mode), [mode]);
+
+  if (!mounted) {
+    return <div style={{ visibility: 'hidden' }}>{children}</div>;
+  }
 
   return (
     <ThemeContext.Provider value={{ mode, toggleTheme }}>
