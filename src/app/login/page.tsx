@@ -23,16 +23,20 @@ export default function LoginPage() {
   const [email, setEmail] = useState('demo@mialfoli.app');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (isAuthenticated) router.replace('/dashboard');
     return () => clearError();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isAuthenticated, router, clearError]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     await login(email, password);
   };
+
+  if (!mounted) return null;
 
   return (
     <Box
@@ -95,6 +99,7 @@ export default function LoginPage() {
 
         <Box component="form" onSubmit={handleLogin}>
           <TextField
+            id="login-email"
             label="Correo electrónico"
             type="email"
             fullWidth
@@ -106,6 +111,7 @@ export default function LoginPage() {
             autoComplete="email"
           />
           <TextField
+            id="login-password"
             label="Contraseña"
             type={showPassword ? 'text' : 'password'}
             fullWidth

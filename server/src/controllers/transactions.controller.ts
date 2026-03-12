@@ -7,11 +7,12 @@ const transactionSchema = z.object({
   type: z.enum(['income', 'expense', 'transfer']),
   amount: z.number().positive('El monto debe ser positivo'),
   description: z.string().min(1, 'Descripción requerida'),
-  categoryId: z.string().uuid().optional(),
-  accountId: z.string().uuid().optional(),
-  percentageRuleId: z.string().uuid().optional(),
+  categoryId: z.string().uuid().optional().nullable(),
+  accountId: z.string().uuid().optional().nullable(),
+  percentageRuleId: z.string().uuid().optional().nullable(),
+  sharedGroupId: z.string().uuid().optional().nullable(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Fecha inválida (YYYY-MM-DD)'),
-  notes: z.string().optional(),
+  notes: z.string().optional().nullable(),
   tags: z.array(z.string()).optional(),
   isRecurring: z.boolean().optional(),
 });
@@ -35,7 +36,7 @@ export async function getTransactions(req: AuthRequest, res: Response): Promise<
   const [transactions, total] = await Promise.all([
     prisma.transaction.findMany({
       where,
-      include: { category: true, account: true },
+      include: { category: true, account: true, sharedGroup: true },
       orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
       take,
       skip,
@@ -65,7 +66,7 @@ export async function createTransaction(req: AuthRequest, res: Response): Promis
       userId: req.userId!,
       tags: rest.tags || [],
     },
-    include: { category: true, account: true },
+    include: { category: true, account: true, sharedGroup: true },
   });
 
   res.status(201).json({ transaction });
@@ -97,7 +98,7 @@ export async function updateTransaction(req: AuthRequest, res: Response): Promis
       ...rest,
       ...(date ? { date: new Date(date) } : {}),
     },
-    include: { category: true, account: true },
+    include: { category: true, account: true, sharedGroup: true },
   });
 
   res.json({ transaction });

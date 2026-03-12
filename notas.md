@@ -167,6 +167,12 @@ git add server/scripts/seedAndres.ts && git commit -m "fix: restaura 20 categori
 
 
 
+"Muéstrame exactamente qué archivos modificaste y un resumen de los cambios y un super resumen o titulo para el commit"
+
+
+
+
+
 
 - Tengo un inconveniente que no me deja acomodar en mi mente como solucionarlo y por más que lo pienso no doy con la solución o lógica y requiero que me ayudes y es el siguiente:
     - Tengo cuentas bancarias con tarjetas debito y credito de Colombia y recibo dinero en COP en ellas, pero en la actualidad vivo en mexico y tambien tengo cuentas bancarias debito credito y recibo en ellas dinero en MXN, no se como ingresar esto a Mis cuentas y que me funcione correctamente con los porcentajes y demas funciones de la app. Lo unico que se me ocurre es crear una cuenta para COP y Otra para MXN, pero no se si esto sea lo correcto o si exista una mejor manera de hacerlo. ya que tambien tengo una tarjeta de DolarApp donde he comprado Dolares.

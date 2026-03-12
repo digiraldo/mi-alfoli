@@ -21,11 +21,15 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (isAuthenticated) router.replace('/dashboard');
     return () => clearError();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router, clearError]);
+
+  if (!mounted) return null;
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +93,7 @@ export default function RegisterPage() {
 
         <Box component="form" onSubmit={handleRegister}>
           <TextField
+            id="reg-name"
             label="Nombre completo"
             fullWidth
             value={fullName}
@@ -100,6 +105,7 @@ export default function RegisterPage() {
             autoFocus
           />
           <TextField
+            id="reg-email"
             label="Correo electrónico"
             type="email"
             fullWidth
@@ -111,6 +117,7 @@ export default function RegisterPage() {
             autoComplete="email"
           />
           <TextField
+            id="reg-password"
             label="Contraseña (mín. 6 caracteres)"
             type={showPassword ? 'text' : 'password'}
             fullWidth

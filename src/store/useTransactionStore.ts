@@ -25,6 +25,7 @@ function mapApiTransaction(tx: any): Transaction {
     categoryId: tx.categoryId ?? '',
     accountId: tx.accountId,
     percentageRuleId: tx.percentageRuleId,
+    sharedGroupId: tx.sharedGroupId,
     date: typeof tx.date === 'string' ? tx.date.slice(0, 10) : tx.date,
     tags: tx.tags ?? [],
     isRecurring: tx.isRecurring ?? false,
@@ -78,6 +79,7 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
       categoryId: data.categoryId || undefined,
       accountId: data.accountId || undefined,
       percentageRuleId: data.percentageRuleId || undefined,
+      sharedGroupId: data.sharedGroupId || undefined,
       date: typeof data.date === 'string' ? data.date : new Date(data.date).toISOString().slice(0, 10),
     };
     const res = await api.post<{ transaction: any }>('/api/transactions', payload);
@@ -91,6 +93,7 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
       categoryId: data.categoryId === '' ? null : data.categoryId,
       accountId: data.accountId === '' ? null : data.accountId,
       percentageRuleId: data.percentageRuleId === '' ? null : data.percentageRuleId,
+      sharedGroupId: data.sharedGroupId === '' ? null : data.sharedGroupId,
       date: data.date ? (typeof data.date === 'string' ? data.date : new Date(data.date).toISOString().slice(0, 10)) : undefined,
     };
     const res = await api.put<{ transaction: any }>(`/api/transactions/${id}`, payload);

@@ -29,10 +29,10 @@ const EMPTY_TX: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'> =
   amount: 0,
   description: '',
   categoryId: '', // Empezará vacío, lo llenaremos dinámicamente al abrir el modal
-  accountId: '', // Por defecto no hay cuenta seleccionada
-  percentageRuleId: '', 
+  accountId: null, // Por defecto no hay cuenta seleccionada
+  percentageRuleId: null, 
   date: new Date().toISOString().split('T')[0],
-  sharedGroupId: '',
+  sharedGroupId: null,
 };
 
 export default function TransactionsPage() {
@@ -84,14 +84,23 @@ export default function TransactionsPage() {
   const openAdd = (type: 'income' | 'expense') => {
     setEditing(null);
     const defaultCat = categories.find((c) => c.type === type)?.id || '';
-    const defaultAcc = accounts.find((a) => a.isDefault)?.id || '';
-    setForm({ ...EMPTY_TX, type, categoryId: defaultCat, accountId: defaultAcc, sharedGroupId: '' });
+    const defaultAcc = accounts.find((a) => a.isDefault)?.id || null;
+    setForm({ ...EMPTY_TX, type, categoryId: defaultCat, accountId: defaultAcc, sharedGroupId: null });
     setDialogOpen(true);
   };
 
   const openEdit = (tx: Transaction) => {
     setEditing(tx);
-    setForm({ type: tx.type, amount: tx.amount, description: tx.description, categoryId: tx.categoryId, accountId: tx.accountId || '', percentageRuleId: tx.percentageRuleId || '', date: tx.date, sharedGroupId: tx.sharedGroupId || '' });
+    setForm({ 
+      type: tx.type, 
+      amount: tx.amount, 
+      description: tx.description, 
+      categoryId: tx.categoryId, 
+      accountId: tx.accountId || null, 
+      percentageRuleId: tx.percentageRuleId || null, 
+      date: tx.date, 
+      sharedGroupId: tx.sharedGroupId || null 
+    });
     setDialogOpen(true);
   };
 
