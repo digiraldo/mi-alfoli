@@ -188,7 +188,32 @@ Conversión de Patrimonio: Para que el total de tu app tenga sentido, te propong
 ¿Te gustaría que implementemos esta capacidad multi-moneda para que tus porcentajes y balances se calculen convirtiendo MXN/USD a COP automáticamente?
 
 
+Esta es una excelente pregunta, Andrés. Abordar el manejo de múltiples divisas (multi-currency) es un salto de una aplicación sencilla a un **sistema de gestión financiera profesional**.
 
+Aquí te aclaro tus dudas bajo las mejores prácticas empresariales (utilizadas por software como SAP, Oracle o fintechs como Revolut):
+
+### 1. ¿Es la mejor manera de integrarlo?
+**Sí, absolutamente.** En contabilidad, una "Cuenta" (Ledger) siempre tiene una **Moneda Funcional**. No puedes sumar peras con manzanas en el mismo balance.
+*   **La mejor práctica:** Cada cuenta bancaria tiene su moneda base. Si en tu BBVA México tienes 10,000 MXN, ese número no cambia aunque el dólar suba o baje. Lo que cambia es su **valor equivalente** en tu moneda de reporte (COP).
+
+### 2. ¿Lo hace más complejo o facilita las cosas?
+*   **En el desarrollo:** Añade una pequeña capa de complejidad (necesitamos guardar tasas de cambio y hacer multiplicaciones al mostrar totales).
+*   **Para ti (Usuario):** **Te facilita la vida enormemente.** Actualmente, tienes que hacer el cálculo mental: *"Tengo 500 MXN, eso son como 100,000 COP, más lo de Nequi..."*. La app eliminará esa carga mental y te dará tu **Patrimonio Global Real** actualizado al segundo.
+
+### 3. ¿Es bueno usar una API para conversión automática?
+**Sí, para el Dashboard, pero con control.**
+*   **Práctica empresarial:** Se utiliza lo que llamamos una **"Tasa de Cierre"** diaria. Una API (como *ExchangeRate-API* o *Frankfurter*) nos daría el valor del mercado (TRM). 
+*   **El matiz:** Las tasas de los bancos suelen ser un poco más costosas que la TRM oficial. Por eso, para transacciones exactas entre cuentas (ej. enviar de DolarApp a Nequi), la app te permitirá ajustar el monto real recibido, mientras que para el "día a día", la API se encarga de que tu Dashboard sea preciso sin que tú hagas nada.
+
+---
+
+### Mi Recomendación para la Implementación (Hoja de Ruta):
+
+1.  **Modelo de Datos**: Añadiremos un campo `currency` a cada `Account` (Cuenta Bancaria).
+2.  **API de Tasas**: Integraré un servicio gratuito que consulte cada 24 horas (o bajo demanda) cuánto vale 1 MXN y 1 USD en COP.
+3.  **Lógica de Porcentajes**: **Este es el punto clave.** Mi propuesta es que todos tus "Ingresos", sin importar en qué moneda entren, se conviertan internamente a tu moneda principal (COP) solo para el cálculo de tus reglas (ej. el 10% del diezmado). Así, tus "bolsas" de porcentajes siempre tendrán sentido en una sola moneda, aunque el dinero físico esté repartido en varios países.
+
+**¿Qué te parece este enfoque?** Si estás de acuerdo, puedo empezar a ajustar el **Plan de Implementación** para incluir esta arquitectura multi-moneda de forma profesional.clear
 
 
 

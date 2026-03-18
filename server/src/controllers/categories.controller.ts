@@ -10,12 +10,33 @@ const categorySchema = z.object({
   color: z.string().optional(),
 });
 
+import { DEFAULT_CATEGORIES } from '../lib/constants';
+
 // ── GET /api/categories ───────────────────────────────────
 export async function getCategories(req: AuthRequest, res: Response): Promise<void> {
-  const categories = await prisma.category.findMany({
+  let categories = await prisma.category.findMany({
     where: { userId: req.userId },
     orderBy: [{ type: 'asc' }, { sortOrder: 'asc' }, { name: 'asc' }],
   });
+
+  // SI NO HAY CATEGORÍAS (Usuario nuevo o fallo en registro), crearlas on-the-fly
+  if (categories.length === 0) {
+    console.log(`[Categorías] Sembrando categorías por defecto para el usuario: ${req.userId}`);
+    await prisma.category.createMany({
+      data: DEFAULT_CATEGORIES.map(c => ({
+        ...c,
+        userId: req.userId!,
+        isDefault: true
+      })),
+    });
+
+    // Refetch
+    categories = await prisma.category.findMany({
+      where: { userId: req.userId },
+      orderBy: [{ type: 'asc' }, { sortOrder: 'asc' }, { name: 'asc' }],
+    });
+  }
+
   res.json({ categories });
 }
 
